@@ -1,5 +1,5 @@
 
-## nodejs-mmsql-backend-bolerplate
+## nodejs-mssql-backend-boilerplate
 
 ## TECHNOLOGIES
 A list of technologies used within the project:
