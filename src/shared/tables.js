@@ -1,3 +1,16 @@
-export const db_tbl = {
-    "":""
+export const tbl = {
+    "t001":"[dbo].[AccessRight]",
+    "t002":"[dbo].[Attachment]",
+    "t003":"[dbo].[AuditTrail]",
+    "t004":"[dbo].[Client]",
+    "t005":"[dbo].[Department]",
+    "t006":"[dbo].[DeviceToken]",
+    "t007":"[dbo].[Notification]",
+    "t008":"[dbo].[Permission]",
+    "t009":"[dbo].[Product]",
+    "t010":"[dbo].[Role]",
+    "t011":"[dbo].[Ticket]",
+    "t012":"[dbo].[TicketLine]",
+    "t013":"[dbo].[TicketReview]",
+    "t014":"[dbo].[User]",
 }

@@ -21,5 +21,6 @@ export const err_msg = {
     "e00x20":"This account is currently deactivated",
     "e00x21":"Failed to authenticate token",
     "e00x22":"No token found",
+    "e00x23":"No Record found",
     "":""
 }

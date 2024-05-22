@@ -92,6 +92,97 @@ export class DELETE {
             }
         }
     } // END HERE
+
+    /**
+     * Remove multiple records based on given fields.
+     * @param {string} Table - The name of the table.
+     * @param {Array} Field - An array of field names for the WHERE clause.
+     * @param {Array} Type - An array of SQL data types corresponding to the Field.
+     * @param {Array} Data - An array of data values corresponding to the Field.
+     * @returns {Promise<Boolean>}
+     */
+    static async record_by_fields(Table = '', Field = [], Type = [], Data = []) {
+        let pool, flag = false;
+        try {
+            if (!Table) throw new Error('Table is missing or empty.');
+            if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length || Field.length !== Data.length) {
+                throw new Error('Array parameters are missing, empty, or their lengths do not match.');
+            }
+            pool = await conn(); 
+            pool.setMaxListeners(15);
+            const request = pool.request();
+            const whereClauses = Field.map((field, index) => `${field} = @${field}`).join(' AND ');
+            Field.forEach((field, index) => {
+                request.input(field, Type[index], Data[index]);
+            });
+
+            const query = `DELETE FROM ${Table} WHERE ${whereClauses}`;
+            const result = await request.query(query);
+
+            if (result.rowsAffected[0] > 0) flag = true;
+            return flag;
+        } catch (error) {
+            console.log(`Error in DELETE.record_by_idwfields: ${error.message}`);
+            return flag;
+        } finally {
+            try {
+                if (pool) {
+                    await pool.close();
+                    pool = null;
+                }
+            } catch (error) {
+                throw new Error(`Error closing database pool (delete): ${error.message}`);
+            }
+        }
+    } // END HERE
+
+    /**
+     * Remove multiple records based on an array of IDs.
+     * @param {Array} Ids - An array of record IDs to delete.
+     * @param {string} Table - The name of the table.
+     * @returns {Promise<Boolean>}
+     */
+    static async record_by_ids(Ids = [], Table = '') {
+        let pool, transaction, flag = false;
+        try {
+            if (!Table) throw new Error('Table is missing or empty.');
+            if (!Array.isArray(Ids) || Ids.length === 0) throw new Error('Ids parameter is missing or empty.');
+
+            pool = await conn();
+            pool.setMaxListeners(15);
+            transaction = new sql.Transaction(pool);
+
+            await transaction.begin();
+            const request = new sql.Request(transaction);
+
+            // Use a parameterized query to prevent SQL injection
+            const idParams = Ids.map((_, index) => `@Id${index}`).join(', ');
+            Ids.forEach((id, index) => {
+                request.input(`Id${index}`, sql.Int, id);
+            });
+
+            const query = `DELETE FROM ${Table} WHERE Id IN (${idParams})`;
+            const result = await request.query(query);
+
+            if (result.rowsAffected[0] > 0) flag = true;
+
+            await transaction.commit();
+            return flag;
+        } catch (error) {
+            if (transaction) await transaction.rollback();
+            console.log(`Error in DELETE.record_by_ids: ${error.message}`);
+            return flag;
+        } finally {
+            try {
+                if (pool) {
+                    await pool.close();
+                    pool = null;
+                }
+            } catch (error) {
+                throw new Error(`Error closing database pool (delete): ${error.message}`);
+            }
+        }
+    } // END HERE
 }; // END CLASS
 
 /**

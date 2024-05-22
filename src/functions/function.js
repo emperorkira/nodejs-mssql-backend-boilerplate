@@ -1,5 +1,5 @@
-import { config as dotenvConfig } from 'dotenv'; import sql from 'mssql'; import crypto from 'crypto'; import bcrypt from 'bcrypt'; import jwt from 'jsonwebtoken'; import { GET } from '../models/index.js'
-import { token } from '../type/index.js'
+import sql from 'mssql'; import crypto from 'crypto'; import bcrypt from 'bcrypt'; import jwt from 'jsonwebtoken'; import { GET } from '../models/index.js'
+import { token, default_records } from '../type/index.js'
 
     export const getUserByUsername = async (Username = '') => {
         try{
@@ -8,8 +8,18 @@ import { token } from '../type/index.js'
             if (!user) console.log('No user found');
             return user || null;
         }catch(error){
-            console.log('Error Functions auth_function.getUserByUsername');
+            console.log('Error Functions getUserByUsername');
             return null;
+        }
+    }
+
+    export const isDefaultRecord = async (Id = 0, Table = '') => {
+        try{
+            if (!Id || !Table) return false;
+            return default_records[Table] && default_records[Table].includes(Id);
+        }catch(error){
+            console.log('Error Functions getUserByUsername');
+            return false;
         }
     }
     
@@ -18,7 +28,7 @@ import { token } from '../type/index.js'
             if (!user) return null;
             return jwt.sign({ user }, token.SECRET, { expiresIn: "30m" });
         }catch(error){
-            console.log(' Error Functions auth_function.generateToken');
+            console.log(' Error Functions generateToken');
             return null;
         }
     }
@@ -28,7 +38,7 @@ import { token } from '../type/index.js'
             if (!user) return null;
             return jwt.sign({ user }, token.REFRESH, { expiresIn: "8h" });
         }catch(error){
-            console.log('Error Functions auth_function.generateRefreshToken');
+            console.log('Error Functions generateRefreshToken');
             return null;
         }
     }
@@ -43,7 +53,7 @@ import { token } from '../type/index.js'
             encryptedPassword += cipher.final("hex");
             return iv.toString("hex") + encryptedPassword;
         }catch(error){
-            console.log('Error Functions auth_function.hashPassword');
+            console.log('Error Functions hashPassword');
             return null;
         }
     }

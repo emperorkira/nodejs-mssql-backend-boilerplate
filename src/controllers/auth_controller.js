@@ -1,15 +1,14 @@
 import { GET, ADD, DELETE, UPDATE} from '../models/index.js'
-import { loginSchema } from '../schemas/index.js';
+import { login_schema } from '../schemas/index.js';
 import { err_msg, success_msg } from '../shared/index.js'
 import { getUserByUsername, comparePassword, generateToken, generateRefreshToken } from '../functions/index.js';
 
     export const login = async (req, res) => {
         try {
         const { Username, Password } = req.body;
-        const { error }  = loginSchema.validate({ Username, Password });
-        
+        const { error }  = login_schema.validate({ Username, Password });
         if ( error ) return res.status(400).json({ Login: false, message: err_msg.e00x19 });
-        
+    
         const user = (await getUserByUsername(Username))[0];
         if (!user) return res.status(400).json({ Login: false, message: err_msg.e00x05 });
         if (user.isDeactivated === 1)  return res.status(401).json({ Login: false, message: err_msg.e00x20 });
@@ -77,7 +76,7 @@ import { getUserByUsername, comparePassword, generateToken, generateRefreshToken
                 });
         } catch (error) {
             console.error("Error refreshing tokens:", error);
-            res.status(500).json({ message: "Error refreshing tokens" });
+            return res.status(500).json({ message: "Error refreshing tokens" });
         }
     };
 
