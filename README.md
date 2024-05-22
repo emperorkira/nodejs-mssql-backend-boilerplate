@@ -1,5 +1,5 @@
 
-## innosoft-backend-bolerplate
+## nodejs-mmsql-backend-bolerplate
 
 ## TECHNOLOGIES
 A list of technologies used within the project:
