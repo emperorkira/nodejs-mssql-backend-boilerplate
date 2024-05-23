@@ -1,4 +1,4 @@
-export const sql_query = {
+export const QUERY = {
     "q00x001":"SELECT TOP 1 FROM [dbo].[AccessRight] WHERE Name=@Name",
     "q00x002":"",
     "q00x003":"",
@@ -11,5 +11,7 @@ export const sql_query = {
     "q00x010":"",
     "q010x001":"SELECT [AccessRightId] FROM [dbo].[Permission] WHERE RoleId = @RoleId",
     "q014x001":"SELECT * FROM [dbo].[AuditTrail] WHERE UserId = @UserId",
-    "q014x002":"SELECT * FROM [dbo].[User] WHERE Username = @Username"
+    "q014x002":"SELECT * FROM [dbo].[User] WHERE Username = @Username",
+    "q014x003":"SELECT [Username] FROM [dbo].[User] WHERE Username = @Username AND Id <> @Id",
+    "":""
 }

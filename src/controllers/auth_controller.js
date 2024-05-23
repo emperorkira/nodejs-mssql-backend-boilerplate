@@ -15,9 +15,11 @@ import { getUserByUsername, comparePassword, generateToken, generateRefreshToken
         
         const isPasswordValid = await comparePassword(Password, user.Password);
         if (!isPasswordValid) return res.status(400).json({ Login: false, message: err_msg.e00x19 });
+
         const accessToken = await generateToken(user.Id);
         const refreshToken = await generateRefreshToken(user.Id);
         const permissions = await getUserPermissions(user.RoleId);
+        
         return res
             .cookie("accessToken", accessToken, { httpOnly: true, })
             .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "strict",})

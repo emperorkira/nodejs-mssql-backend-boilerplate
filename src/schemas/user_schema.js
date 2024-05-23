@@ -5,7 +5,7 @@ export const user_schema = Joi.object({
     Username: Joi.string().required(),
     Password: Joi.string().required(),
     Firstname: Joi.string().required(),
-    Middlename: Joi.string(),
+    Middlename: Joi.string().allow(null),
     Lastname: Joi.string().required(),
     Gender: Joi.string().required(),
     Birthdate: Joi.date().required(),

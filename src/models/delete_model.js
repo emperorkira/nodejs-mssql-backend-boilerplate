@@ -10,7 +10,7 @@ export class DELETE {
    * @returns {Promise<Boolean>}
    */
     static async record_by_id(Id = 0, Table = '') {
-        let pool, flag = false;
+        let pool, flag = false; Id = parseInt(Id, 10);
         try {
             if (typeof Id !== 'number' || !Id) throw new Error('Id must be a number');
             if (typeof Table !== 'string' || !Table) throw new Error('Table must be a string');
@@ -19,7 +19,7 @@ export class DELETE {
             pool.setMaxListeners(15);
             const request = pool.request();
             request.input('Id', Int, Id);
-            const result = await request.query(`DELETE FROM ${Table} WHERE Id = @Id`);
+            const result = await request.query(`DELETE FROM [dbo].[${Table}] WHERE [Id] = @Id`);
             
             if (result.rowsAffected[0] === 1) flag = true;
             return flag;
@@ -71,12 +71,12 @@ export class DELETE {
      * @returns {Promise<Boolean>}
      */
     static async record_by_idwfields(Id = 0, Field = [], Table = '') {
-        let pool, flag = false;
+        let pool, flag = false; Id = parseInt(Id, 10);
         try {
             pool = await conn(); pool.setMaxListeners(15);
             const request = pool.request();
             request.input('Id', Int, Id);
-            const result = await request.query(`DELETE FROM ${Table} WHERE ${Field} = @Id`);
+            const result = await request.query(`DELETE FROM [dbo].[${Table}] WHERE ${Field} = @Id`);
             if (result.rowsAffected[0] > 0) flag = true;
             return flag
         } catch (error) {
@@ -116,7 +116,7 @@ export class DELETE {
                 request.input(field, Type[index], Data[index]);
             });
 
-            const query = `DELETE FROM ${Table} WHERE ${whereClauses}`;
+            const query = `DELETE FROM [dbo].[${Table}] WHERE ${whereClauses}`;
             const result = await request.query(query);
 
             if (result.rowsAffected[0] > 0) flag = true;
@@ -161,7 +161,7 @@ export class DELETE {
                 request.input(`Id${index}`, sql.Int, id);
             });
 
-            const query = `DELETE FROM ${Table} WHERE Id IN (${idParams})`;
+            const query = `DELETE FROM [dbo].[${Table}] WHERE Id IN (${idParams})`;
             const result = await request.query(query);
 
             if (result.rowsAffected[0] > 0) flag = true;

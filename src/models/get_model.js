@@ -15,7 +15,7 @@ export class GET {
       pool = await conn(); 
       pool.setMaxListeners(15);
       const request = pool.request();
-      const result = await request.query(`SELECT * FROM ${Table}`);
+      const result = await request.query(`SELECT * FROM [dbo].[${Table}]`);
       return result.recordset || [];
     } catch (error) {
       throw new Error(`Error fetching all records from ${Table}: ${error.message}`);
@@ -37,14 +37,14 @@ export class GET {
    * @returns {Promise<Array>}
    */
   static async record_by_id(Id=0, Table='') {
-    let pool;
+    let pool; Id = parseInt(Id, 10);
     try {
       if (isNaN(Id)) throw new Error('Id must be a number');
       if (typeof Table !== 'string') throw new Error('Table must be a string');
       pool = await conn(); pool.setMaxListeners(15);
       const request = pool.request();
       request.input('Id', Int, Id);
-      const result = await request.query(`SELECT * FROM ${Table} WHERE Id = @Id`);
+      const result = await request.query(`SELECT * FROM [dbo].[${Table}] WHERE [Id] = @Id`);
       return (result.recordset.length > 0)? result.recordset[0]:  null;
     } catch (error) {
       throw error;
@@ -100,7 +100,7 @@ export class GET {
    * @returns {Promise<Array>}
    */
   static async record_by_idwquery(Id=0, Query='') {
-    let pool;
+    let pool; Id = parseInt(Id, 10);
     try {
       if (isNaN(Id) || !Id) throw new Error('Id must be a number');
       if (!Query) throw new Error('Query is empty or invalid');

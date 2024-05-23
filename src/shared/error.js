@@ -21,7 +21,10 @@ export const err_msg = {
     "e00x20":"This account is currently deactivated",
     "e00x21":"Failed to authenticate token",
     "e00x22":"No token found",
-    "e00x23":"No Record found",
+    "e00x23":"No Records found",
     "e00x24":"User has no permission",
+    "e00x25":"Field validation error",
+    "e00x26":"Token already expired",
+    "e00x27":"Username is already taken",
     "":""
 }

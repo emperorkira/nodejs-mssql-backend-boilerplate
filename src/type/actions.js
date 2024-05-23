@@ -1,4 +1,4 @@
-export const user_action = {
+export const ACTION = {
     "a1":{
             "Id":1,
             "Action":"ViewProfile",
@@ -36,117 +36,117 @@ export const user_action = {
         },
     "a8":{
             "Id":8,
-            "Action":"",
-            "Function":""
+            "Action":"ViewAccesRightList",
+            "Function":"get_all"
         },
     "a9":{
             "Id":9,
-            "Action":"",
-            "Function":""
+            "Action":"ViewAccessRightDetails",
+            "Function":"get"
         },
     "a10":{
             "Id":10,
-            "Action":"",
-            "Function":""
+            "Action":"CreateAccessRight",
+            "Function":"create"
         },
-    "11":{
-            "Id":"",
-            "Action":"",
-            "Function":""
+    "a11":{
+            "Id":11,
+            "Action":"RemoveAccessRight",
+            "Function":"remove"
         },
-    "12":{
-            "Id":"",
-            "Action":"",
-            "Function":""
+    "a12":{
+            "Id":12,
+            "Action":"RemoveMultipleAccessRight",
+            "Function":"remove_multiple"
         },
 
-    "13":{
-            "Id":"",
+    "a13":{
+            "Id":13,
+            "Action":"UpdateAccessRight",
+            "Function":"update"
+        },
+    "a14":{
+            "Id":14,
             "Action":"",
             "Function":""
         },
-    "14":{
-            "Id":"",
+    "a15":{
+            "Id":15,
             "Action":"",
             "Function":""
         },
-    "15":{
-            "Id":"",
+    "a16":{
+            "Id":16,
             "Action":"",
             "Function":""
         },
-    "16":{
-            "Id":"",
+    "a17":{
+            "Id":17,
             "Action":"",
             "Function":""
         },
-    "17":{
-            "Id":"",
+    "a18":{
+            "Id":18,
             "Action":"",
             "Function":""
         },
-    "18":{
-            "Id":"",
+    "a19":{
+            "Id":19,
             "Action":"",
             "Function":""
         },
-    "19":{
-            "Id":"",
+    "a20":{
+            "Id":20,
             "Action":"",
             "Function":""
         },
-    "20":{
-            "Id":"",
+    "a21":{
+            "Id":21,
             "Action":"",
             "Function":""
         },
-    "21":{
-            "Id":"",
+    "a22":{
+            "Id":22,
             "Action":"",
             "Function":""
         },
-    "22":{
-            "Id":"",
+    "a23":{
+            "Id":23,
             "Action":"",
             "Function":""
         },
-    "23":{
-            "Id":"",
+    "a24":{
+            "Id":24,
             "Action":"",
             "Function":""
         },
-    "24":{
-            "Id":"",
+    "a25":{
+            "Id":25,
             "Action":"",
             "Function":""
         },
-    "25":{
-            "Id":"",
+    "a26":{
+            "Id":26,
             "Action":"",
             "Function":""
         },
-    "26":{
-            "Id":"",
+    "a27":{
+            "Id":27,
             "Action":"",
             "Function":""
         },
-    "27":{
-            "Id":"",
+    "a28":{
+            "Id":28,
             "Action":"",
             "Function":""
         },
-    "28":{
-            "Id":"",
+    "a29":{
+            "Id":29,
             "Action":"",
             "Function":""
         },
-    "29":{
-            "Id":"",
-            "Action":"",
-            "Function":""
-        },
-    "30":{
-            "Id":"",
+    "a30":{
+            "Id":30,
             "Action":"",
             "Function":""
         },

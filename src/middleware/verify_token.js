@@ -8,20 +8,6 @@ import { err_msg } from '../shared/index.js';
         if (!accessToken) return res.json({ valid: false, message: err_msg.e00x21, msg:'here' });
         jwt.verify(accessToken, token.SECRET, async (error, user) => {
             if (error) return refresh(req, res, next);
-            
-            const excludedRoutes = [
-                "/verify",
-                "/refresh",
-                "/logout"
-            ];
-            
-            if (excludedRoutes.some((route) => req.path.startsWith(route))) {
-                req.user = user;
-                req.accessToken = accessToken;
-                req.refreshToken = refreshToken;
-                return next();
-            }
-    
             req.user = user;
             req.accessToken = accessToken;
             req.refreshToken = refreshToken;

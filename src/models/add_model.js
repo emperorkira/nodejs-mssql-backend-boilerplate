@@ -25,7 +25,7 @@ export class ADD {
       const fieldNames = Field.join(', ');
       const fieldParams = Field.map(field => `@${field}`).join(', ');
 
-      const query = `INSERT INTO ${Table}(${fieldNames}) VALUES (${fieldParams})`;
+      const query = `INSERT INTO [dbo].[${Table}](${fieldNames}) VALUES (${fieldParams})`;
 
       Field.forEach((field, index) => {
         if (Data[index] === undefined) {
@@ -81,7 +81,7 @@ export class ADD {
         const query_fields = Fields.join(', ');
         const query_values = batch.map((_, rowIndex) => `(${Fields.map((field, fieldIndex) => `@${field}${rowIndex}${fieldIndex}`).join(', ')})`).join(', ');
 
-        const query = `INSERT INTO ${Table} (${query_fields}) VALUES ${query_values}`;
+        const query = `INSERT INTO [dbo].[${Table}] (${query_fields}) VALUES ${query_values}`;
 
         batch.forEach((data, rowIndex) => {
           Fields.forEach((field, fieldIndex) => {
@@ -128,10 +128,10 @@ export class ADD {
       '000234', "adobo_gaming", "b813e59b57962b54124ff0bbfb6c3471e61c7cf82aef69b89d7115d6ee794b33", 
       "adobo_gaming", "adobo_gaming", "adobo_gaming", "Male", "2002-01-29", 
       "E Sabellano St. Lopez Compound", "09497506210", "../../images/1710507501269.png", 
-      1, 5, 0, 2, "2024-02-25 20:11:03.000"
+      1, 1, 0, 1, "2024-02-25 20:11:03.000"
     ];
 
-    const res = await ADD.record('[dbo].[User]', fields, types, data);
+    const res = await ADD.record('User', fields, types, data);
     
     console.log('Record inserted:', res);
   } catch (error) {

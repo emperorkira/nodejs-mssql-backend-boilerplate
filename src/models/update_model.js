@@ -13,7 +13,7 @@ export class UPDATE {
          * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
      */
     static async record(Id = 0, Table = '', Field = [], Type = [], Data = []) {
-        let pool, flag = false;
+        let pool, flag = false; Id = parseInt(Id, 10);
         try {
           if (!Id) throw new Error('Id field is missing.');
           if (!Table) throw new Error('Table name field is missing.');
@@ -28,7 +28,7 @@ export class UPDATE {
             request.input(field, Type[index], Data[index]);
           });
           request.input('Id', Int, Id);
-          const query = `UPDATE ${Table} SET ${setExpressions} WHERE Id = @Id`;
+          const query = `UPDATE [dbo].[${Table}] SET ${setExpressions} WHERE Id = @Id`;
           const result = await request.query(query);
     
           if (result.rowsAffected[0] > 0) flag = true;
@@ -57,7 +57,7 @@ export class UPDATE {
      * @returns {Promise<boolean>} - Returns true if the records are successfully updated.
      */
     static async records(ConditionField = [], Table = '', Field = [], Type = [], Data = []) {
-      let pool, transaction, flag = false;
+      let pool, transaction, flag = false; 
       try {
           if (!Array.isArray(ConditionField) || ConditionField.length === 0) throw new Error('ConditionField array is missing or empty.');
           if (!Table) throw new Error('Table name field is missing.');
@@ -71,7 +71,7 @@ export class UPDATE {
               const request = new sql.Request(transaction);
               const setExpressions = Field.map((field, index) => `${field} = @${field}${index}`);
               const whereConditions = ConditionField.map((condition, index) => `${condition.field} = @condition${index}`);
-              const updateQuery = `UPDATE ${Table} SET ${setExpressions.join(', ')} WHERE ${whereConditions.join(' AND ')}`;
+              const updateQuery = `UPDATE [dbo].[${Table}] SET ${setExpressions.join(', ')} WHERE ${whereConditions.join(' AND ')}`;
               Field.forEach((field, index) => { request.input(`${field}${index}`, Type[index], item[index]); });
               ConditionField.forEach((condition, index) => { request.input(`condition${index}`, condition.type, condition.value); });
               await request.query(updateQuery);
@@ -102,19 +102,34 @@ export class UPDATE {
 /*
 (async () => {
   try {
+
     const Field = [
-      'Code', 'Username'
-    ];
-
+      "Username",
+      "Firstname",
+      "Middlename",
+      "Lastname",
+      "Gender",
+      "Birthdate",
+      "Address",
+      "ContactNumber",
+      "Image",
+      "DepartmentId",
+      "RoleId",
+      "isDeactivated",
+      "UpdatedBy",
+      "DateUpdated"
+  ];
     const types = [
-      NVarChar(50), NVarChar(255)
+      NVarChar(255), NVarChar(50), NVarChar(50), NVarChar(50),
+      NVarChar(50), DateTime, NVarChar(255), NVarChar(50), NVarChar(255), 
+      Int, Int, Int, Int, DateTime
     ];
-
     const data = [
-      '000010', "esgaming"
+        'body.Username',' body.Firstname', 'body.Middlename',' body.Lastname',
+        'body.Gender', '2024-05-26', 'body.Address', 'body.ContactNumber', 'body.Image',
+        1, 1, 0, 1, '2024-05-26'
     ];
-
-    const res = await UPDATE.record(6029,'[dbo].[User]', Field, types, data);
+    const res = await UPDATE.record(9,'User', Field, types, data);
     
     console.log('Record inserted:', res);
   } catch (error) {
