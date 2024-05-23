@@ -3,7 +3,7 @@
 import sql from 'mssql'; import crypto from 'crypto'; import jwt from 'jsonwebtoken'; 
 import { GET, ADD } from '../models/index.js'
 import { token, default_records, audittrail_fields } from '../type/index.js';
-import { tbl, sql_query } from '../shared/index.js'; 
+import { tbl, QUERY } from '../shared/index.js'; 
 import { audittrail_schema } from '../schemas/index.js';
 
     const { Int, NVarChar, DateTime } = sql;
@@ -16,7 +16,7 @@ import { audittrail_schema } from '../schemas/index.js';
     export const getUserByUsername = async (Username = '') => {
         try{
             if (!Username) return null;
-            const user = await GET.record_by_fields(sql_query.q014x002, ['Username'], [NVarChar(255)], [Username]);
+            const user = await GET.record_by_fields(QUERY.q014x002, ['Username'], [NVarChar(255)], [Username]);
             return user;
         }catch(error){
             console.log('Error Functions getUserByUsername');
@@ -56,7 +56,7 @@ import { audittrail_schema } from '../schemas/index.js';
     */
     export const isDefaultRecord = async (Id = 0, Table = '') => {
         try {
-            if (!Id || !Table) return false;
+            if (!Id || !Table) return false; Id = parseInt(Id, 10); 
             return default_records[Table] && default_records[Table].includes(Id);
         } catch(error) {
             console.log('Error Functions getUserByUsername');
@@ -74,7 +74,7 @@ import { audittrail_schema } from '../schemas/index.js';
             if (!Id) return null;
             const userExists = await GET.record_by_id(Id, tbl.t010);
             if (!userExists) return null;
-            const permissions = await GET.record_by_fields(sql_query.q010x001, ['RoleId'], [Int], [Id]);
+            const permissions = await GET.record_by_fields(QUERY.q010x001, ['RoleId'], [Int], [Id]);
             return permissions;
         } catch (error) {
             console.error('Error in getUserPermissions:', error);
@@ -184,11 +184,11 @@ import { audittrail_schema } from '../schemas/index.js';
             console.log('Table is missing');
             return null;
           }
-          const latest = await GET.record_by_query(`SELECT MAX([Code]) AS Code FROM ${Table}`);
+          const latest = await GET.record_by_query(`SELECT MAX([Code]) AS Code FROM [dbo].[${Table}]`);
           const code = String(parseInt(latest[0].Code || 0, 10) + 1).padStart( 6, "0" );
           return code || null;
         } catch (error) {
-          console.log('Error in comparePassword function:', error.message);
+          console.log('Error in generateCode function:', error.message);
           return null;
         }
     };  // END HERE
@@ -223,7 +223,7 @@ import { audittrail_schema } from '../schemas/index.js';
         try {
             if (!Table || !Field || !Type || !Data || Field.length !== Type.length || Field.length !== Data.length) return flag;
             const conditions = Field.map((field, index) => `${field} = @${field}`).join(' AND ');
-            const check = await GET.record_by_fields(`SELECT 1 FROM ${Table} WHERE ${conditions}`, Field, Type, Data);
+            const check = await GET.record_by_fields(`SELECT 1 FROM [dbo].[${Table}] WHERE ${conditions}`, Field, Type, Data);
             if (check && check.length > 0) flag = true;
             return flag;
         } catch (error) {
@@ -231,11 +231,32 @@ import { audittrail_schema } from '../schemas/index.js';
             return flag;
         }
     }; // END HERE
-    /*
+
+    /**
+     * Check if the records already exists
+     * @param {string} Query - The name of the table
+     * @param {Array<string>} Field - The array of field names
+     * @param {Array<string>} Type - The array of SQL data types corresponding to the fields
+     * @param {Array<any>} Data - The array of data values corresponding to the fields
+     * @returns {Promise<boolean>} - Returns true if the record exists, otherwise false
+     */
+    export const find_by_fields = async (Query = '', Field = [], Type = [], Data = []) => {
+        let flag = false;
+        try {
+            if (!Query || !Field || !Type || !Data || Field.length !== Type.length || Field.length !== Data.length) return flag;
+            const check = await GET.record_by_fields(Query, Field, Type, Data);
+            if (check && check.length > 0) flag = true;
+            return flag;
+        } catch (error) {
+            console.log('Error in isFound function:', error.message);
+            return flag;
+        }
+    }; // END HERE
     
+    /*
     (async()=> {
         try {
-            const permissions = await isFound('[dbo].[User]',['Username'],[NVarChar(255)],['serund']);
+            const permissions = await isDefaultRecord(1, 'User');
             console.log(permissions);
         } catch (error) {
             console.log(error)
