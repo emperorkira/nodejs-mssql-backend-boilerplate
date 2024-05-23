@@ -9,4 +9,7 @@ export const sql_query = {
     "q00x008":"",
     "q00x009":"",
     "q00x010":"",
+    "q010x001":"SELECT [AccessRightId] FROM [dbo].[Permission] WHERE RoleId = @RoleId",
+    "q014x001":"SELECT * FROM [dbo].[AuditTrail] WHERE UserId = @UserId",
+    "q014x002":"SELECT * FROM [dbo].[User] WHERE Username = @Username"
 }

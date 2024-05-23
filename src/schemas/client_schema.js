@@ -1,4 +1,4 @@
-import Joi from 'joi'
+import Joi from 'joi';
 
 export const client_schema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),

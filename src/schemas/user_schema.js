@@ -3,6 +3,7 @@ import Joi from 'joi';
 export const user_schema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),
     Username: Joi.string().required(),
+    Password: Joi.string().required(),
     Firstname: Joi.string().required(),
     Middlename: Joi.string(),
     Lastname: Joi.string().required(),

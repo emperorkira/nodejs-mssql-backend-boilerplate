@@ -1,7 +1,7 @@
 import { GET, ADD, DELETE, UPDATE} from '../models/index.js'
 import { login_schema } from '../schemas/index.js';
 import { err_msg, success_msg } from '../shared/index.js'
-import { getUserByUsername, comparePassword, generateToken, generateRefreshToken } from '../functions/index.js';
+import { getUserByUsername, comparePassword, generateToken, generateRefreshToken, getUserPermissions } from '../functions/index.js';
 
     export const login = async (req, res) => {
         try {
@@ -17,9 +17,11 @@ import { getUserByUsername, comparePassword, generateToken, generateRefreshToken
         if (!isPasswordValid) return res.status(400).json({ Login: false, message: err_msg.e00x19 });
         const accessToken = await generateToken(user.Id);
         const refreshToken = await generateRefreshToken(user.Id);
+        const permissions = await getUserPermissions(user.RoleId);
         return res
             .cookie("accessToken", accessToken, { httpOnly: true, })
             .cookie("refreshToken", refreshToken, { httpOnly: true, sameSite: "strict",})
+            .cookie("permissions", permissions, { httpOnly: true, sameSite: "strict",})
             .header('Authorization', `Bearer ${accessToken}`)
             .header('Refresh-Token', refreshToken)
             .json({
@@ -47,11 +49,11 @@ import { getUserByUsername, comparePassword, generateToken, generateRefreshToken
         }
     };
     
-
     export const logout = async (req, res) => {
         try {
             res.clearCookie("accessToken");
             res.clearCookie("refreshToken");
+            res.clearCookie("permissions");
             return res.status(200).json({ success: true, message: success_msg.s00x00 });
         } catch (error) {
             console.error('Error in login function:', error.message);

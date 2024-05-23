@@ -22,5 +22,6 @@ export const err_msg = {
     "e00x21":"Failed to authenticate token",
     "e00x22":"No token found",
     "e00x23":"No Record found",
+    "e00x24":"User has no permission",
     "":""
 }

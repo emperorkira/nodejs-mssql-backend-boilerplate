@@ -10,3 +10,7 @@ A list of technologies used within the project:
 ## TO START
 1. npm install
 2. npm run start
+
+
+## TO DO
+- Clean the database and correct it, to proceed in user controller modeling
