@@ -11,6 +11,8 @@ export const client_schema = Joi.object({
     DateSoftwareAcceptance: Joi.date(),
     DateBCSExpiry: Joi.date(),
     DateBCSRenewal: Joi.date(),
+    IsDeleted: Joi.number().integer().required(),
+    DeletedBy: Joi.number().integer().allow(null),
     CreatedBy: Joi.number().integer(),
     DateCreated: Joi.date(),
     UpdatedBy: Joi.number().integer().allow(null),

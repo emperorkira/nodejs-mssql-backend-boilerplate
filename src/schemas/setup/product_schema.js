@@ -6,6 +6,8 @@ export const product_schema = Joi.object({
   Description: Joi.string().required(),
   Category: Joi.string().required(),
   Price: Joi.number().precision(5).required(),
+  IsDeleted: Joi.number().integer().required(),
+  DeletedBy: Joi.number().integer().allow(null),
   CreatedBy: Joi.number().integer().allow(null),
   DateCreated: Joi.date(),
   UpdatedBy: Joi.number().integer().allow(null),
