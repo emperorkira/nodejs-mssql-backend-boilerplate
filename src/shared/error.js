@@ -7,7 +7,7 @@ export const err_msg = {
     "e00x06":"Record already exists",
     "e00x07":"Id is undefined or null",
     "e00x08":"Record is undefined or null",
-    "e00x08":"Id or record data is undefined or null",
+    "e00x09":"Id or record data is undefined or null",
     "e00x10":"Default record cannot be edited",
     "e00x11":"Locked record cannot be deleted",
     "e00x12":"User not authorized",

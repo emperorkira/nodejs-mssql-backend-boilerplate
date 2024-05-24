@@ -1,5 +1,5 @@
 export const QUERY = {
-    "q00x001":"SELECT TOP 1 FROM [dbo].[AccessRight] WHERE Name=@Name",
+    "q00x001":"SELECT TOP 1 [Name] FROM [dbo].[AccessRight] WHERE [Name] = @Name AND [Id] <> @Id",
     "q00x002":"",
     "q00x003":"",
     "q00x004":"",

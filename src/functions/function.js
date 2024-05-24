@@ -55,12 +55,14 @@ import { audittrail_schema } from '../schemas/index.js';
      * @returns {Promise<String>} - returns true or flase
     */
     export const isDefaultRecord = async (Id = 0, Table = '') => {
+        let flag = false;
         try {
-            if (!Id || !Table) return false; Id = parseInt(Id, 10); 
-            return default_records[Table] && default_records[Table].includes(Id);
+            if (!Id || !Table) return flag; Id = parseInt(Id, 10); 
+            if (default_records[Table] && default_records[Table].includes(Id)) flag = true;
+            return flag;
         } catch(error) {
             console.log('Error Functions getUserByUsername');
-            return false;
+            return flag;
         }
     };  // END HERE
 
