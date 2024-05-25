@@ -196,23 +196,6 @@ import { audittrail_schema } from '../schemas/index.js';
     };  // END HERE
 
     /**
-     * Check if the actionId is in the permissions
-     * @param {Array} permissions - The array of permissions
-     * @param {number} actionId - The action ID to check
-     * @returns {Promise<boolean>} - Returns true if the actionId is found in permissions
-     */
-    export const isPermission = async (permissions, actionId) => {
-        try {
-            if (!permissions || !actionId) return false;
-            const hasPermission = permissions.some(permission => permission.AccessRightId === actionId);
-            return hasPermission;
-        } catch (error) {
-            console.log('Error in isPermission function:', error.message);
-            return false;
-        }
-    };  // END HERE
-
-    /**
      * Check if the record already exists
      * @param {string} Table - The name of the table
      * @param {Array<string>} Field - The array of field names
@@ -255,6 +238,22 @@ import { audittrail_schema } from '../schemas/index.js';
         }
     }; // END HERE
     
+    /**
+     * Check if the actionId is in the permissions
+     * @param {number} UserId 
+     * @param {string} Action 
+     * @returns {Promise<boolean>} - Returns true if the action is found in permissions
+     */
+       export const isPermission = async (UserId = 0, Action = '') => {
+        try {
+            if (!Action || !UserId) return false;
+            const hasPermission = await find_by_fields(QUERY.q00x000, ['UserId','Action'], [Int, NVarChar(50)], [UserId, Action]);
+            return hasPermission;
+        } catch (error) {
+            console.log('Error in isPermission function:', error.message);
+            return false;
+        }
+    };  // END HERE
     /*
     (async()=> {
         try {

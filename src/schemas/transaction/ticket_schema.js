@@ -15,6 +15,7 @@ export const ticket_schema = Joi.object({
     Solution: Joi.string().allow(null),
     DoneDate: Joi.date().allow(null),
     IsReviewed: Joi.number().integer().allow(null),
+    IsDeleted: Joi.number().integer(),
     CreatedBy: Joi.number().integer().allow(null), // PK of User
     UpdatedBy: Joi.number().integer().allow(null), // PK of User
     DateCreated: Joi.date(),

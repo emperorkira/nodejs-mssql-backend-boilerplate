@@ -7,5 +7,6 @@ export const success_msg = {
     "s00x05":"Record locked",
     "s00x06":"Record unlocked",
     "s00x07":"Connected",
-    "s00x08":"Software has licensed"
+    "s00x08":"Software has licensed",
+    "s00x09":"Record moved to Trash "
 }

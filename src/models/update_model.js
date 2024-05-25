@@ -61,8 +61,7 @@ export class UPDATE {
       try {
           if (!Array.isArray(ConditionField) || ConditionField.length === 0) throw new Error('ConditionField array is missing or empty.');
           if (!Table) throw new Error('Table name field is missing.');
-          if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length || Field.length !== Data[0].length) throw new Error('Invalid input: Field, Type, or data arrays are either not arrays or have different lengths.');
-          if (Data.length === 0) throw new Error('Data array is empty.');
+          if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length || Field.length !== Data[0].length) throw new Error('Parameters not arrays or have different lengths.');
           pool = await conn();
           pool.setMaxListeners(15);
           transaction = new sql.Transaction(pool);
@@ -94,6 +93,63 @@ export class UPDATE {
               throw new Error(`Error closing database connection (update): ${error.message}`);
           }
       }
+    } // END HERE
+
+    /**
+     * Update multiple records based on an array of IDs.
+     * @param {Array} Ids - An array of record IDs to update.
+     * @param {string} Table - The name of the table.
+     * @param {Array} Field
+     * @param {Array} Type 
+     * @param {Array} Data
+     * @returns {Promise<Boolean>}
+     */
+    static async record_by_ids(Ids = [], Table = '', Field = [], Type = [], Data = []) {
+        let pool, transaction, flag = false;
+        try {
+            if (!Table) throw new Error('Table is missing or empty.');
+            if (!Array.isArray(Ids) || Ids.length === 0) throw new Error('Ids parameter is missing or empty.');
+            if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length) throw new Error('Parameters are not arrays or have different lengths.');
+    
+            pool = await conn();
+            pool.setMaxListeners(15);
+            transaction = new sql.Transaction(pool);
+    
+            await transaction.begin();
+            const request = new sql.Request(transaction);
+    
+            // Use a parameterized query to prevent SQL injection
+            const idParams = Ids.map((_, index) => `@Id${index}`).join(', ');
+            Ids.forEach((id, index) => {
+                request.input(`Id${index}`, sql.Int, id);
+            });
+    
+            const setExpressions = Field.map((field, index) => `${field} = @${field}`).join(', ');
+            Field.forEach((field, index) => {
+                request.input(field, Type[index], Data[index]);
+            });
+    
+            const updateQuery = `UPDATE ${Table} SET ${setExpressions} WHERE Id IN (${idParams})`;
+            const result = await request.query(updateQuery);
+    
+            if (result.rowsAffected[0] > 0) flag = true;
+    
+            await transaction.commit();
+            return flag;
+        } catch (error) {
+            if (transaction) await transaction.rollback();
+            console.log(`Error in record_by_ids: ${error.message}`);
+            return flag;
+        } finally {
+            try {
+                if (pool) {
+                    await pool.close();
+                    pool = null;
+                }
+            } catch (error) {
+                throw new Error(`Error closing database pool (record_by_ids): ${error.message}`);
+            }
+        }
     } // END HERE
 }; // END CLASS
 
@@ -159,3 +215,18 @@ export class UPDATE {
     }
   })();
   */
+/*
+  const to_move = [68, 69, 70]; // Array of IDs to update
+  const tbl_t001 = 'AccessRight'; // Table name
+  const fields = ['IsDeleted', 'DeletedBy']; // Fields to update
+  const types = [sql.Int, sql.Int]; // SQL types of the fields
+  const data = [0, 1]; // Data to update
+
+  (async () => {
+      const result = await UPDATE.record_by_ids(to_move, tbl_t001, fields, types, data);
+      if (result) {
+          console.log('Records updated successfully.');
+      } else {
+          console.log('No records were updated.');
+      }
+  })();*/
