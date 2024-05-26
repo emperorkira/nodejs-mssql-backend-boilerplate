@@ -119,7 +119,7 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             if (!Id) return res.status(400).json({ message: err_msg.e00x07 });
             if (!(await isFound(tbl.t001, ['Id'], [Int], [Id]))) return res.status(400).json({ message: err_msg.e00x05 });
             if (await isDefaultRecord(Id, tbl.t001) || await isFound(tbl.t009, ['AccessRightId'], [Int], [Id])) return res.status(400).json({ message: err_msg.e00x04});
-            if (!(await UPDATE.record(Id, tbl.t001, ['IsDeleted','DeletedBy'], [Int, Int], [0, crntId]))) return res.status(400).json({ message: err_msg.e00x03 });
+            if (!(await UPDATE.record(Id, tbl.t001, ['IsDeleted','DeletedBy'], [Int, Int], [1, crntId]))) return res.status(400).json({ message: err_msg.e00x03 });
             return res.status(200).json({ message: success_msg.s00x09 });
         } catch(error) {
             return res.status(500).json({ message: err_msg.e00x02 });

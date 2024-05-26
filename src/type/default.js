@@ -2,6 +2,7 @@
 export const default_records = {
     User: [1],
     Role: [1],
+    Client: [1],
     Department: [1],
     AccessRight: [
       1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 

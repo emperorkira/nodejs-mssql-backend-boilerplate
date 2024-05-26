@@ -19,3 +19,11 @@ export const client_schema = Joi.object({
     DateUpdated: Joi.date().allow(null),
   });
   
+  export const clientline_schema = Joi.object({
+    Id: Joi.number().integer().required(),
+    ClientId: Joi.number().integer().allow(null),
+    ProductId: Joi.number().integer().required().allow(null),
+    Quantity: Joi.number().precision(5).allow(null),
+    DateCreated: Joi.date().allow(null),
+  });
+  
