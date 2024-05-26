@@ -4,7 +4,7 @@ export const department_schema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),
     Name: Joi.string().required(),
     Description: Joi.string().required(),
-    IsDeleted: Joi.number().integer(),
+    IsDeleted: Joi.number().integer().allow(null),
     DeletedBy: Joi.number().integer().allow(null),
     CreatedBy: Joi.number().allow(null),
     DateCreated: Joi.date(),

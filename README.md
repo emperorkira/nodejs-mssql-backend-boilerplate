@@ -13,4 +13,4 @@ A list of technologies used within the project:
 
 
 ## TO DO
-- Clean the database and correct it, to proceed in user controller modeling
+- Update the ClientLine Id to Identity Yes

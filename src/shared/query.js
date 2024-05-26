@@ -10,7 +10,10 @@ export const QUERY = {
     "q04x001":"SELECT * FROM [dbo].[Client] WHERE IsDeleted = 0",
     "q04x002":"SELECT TOP 1 [Name] FROM [dbo].[Client] WHERE [Name] = @Name AND [Id] <> @Id",
     "q04x003":"SELECT * FROM [dbo].[ClientLine] WHERE [ClientId] = @ClientId",
-    
+
+    // DepartmentQueries    
+    "q06x001":"SELECT * FROM [dbo].[Department] WHERE IsDeleted = 0",
+
     // RoleQueries  
     "q010x001":"SELECT [AccessRightId] FROM [dbo].[Permission] WHERE RoleId = @RoleId",
     

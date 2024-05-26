@@ -165,7 +165,6 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             return res.status(500).json({ message: err_msg.e00x02 });
         }
     }; // END HERE
-
     // WORKING AS EXPECTED
     export const create_multiple_clientline = async (req, res) => {
         try {
@@ -186,7 +185,6 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             return res.status(500).json({ message: err_msg.e00x02 });
         }
     }; // END HERE
-
     // WORKING AS EXPECTED
     export const update_multiple_clientline = async (req, res) => {
         try {
