@@ -169,7 +169,9 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
     // WORKING AS EXPECTED
     export const create_multiple_clientline = async (req, res) => {
         try {
-            const { data } = req.body, DateCreated = new Date().toISOString(), to_create = [];
+            const { data } = req.body, DateCreated = new Date().toISOString(), to_create = [], crntId = req.user.user;
+            if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
+            if(!await isPermission(crntId, ACTION.t004.cr8)) return res.status(400).json({ message: err_msg.e00x24});
             if (!Array.isArray(data)) return res.status(400).json({ message: err_msg.e00x23 });
             for (let record of data) {
                 const recordWithDate = { ...record, DateCreated };
@@ -188,7 +190,9 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
     // WORKING AS EXPECTED
     export const update_multiple_clientline = async (req, res) => {
         try {
-            const { data } = req.body, DateCreated = new Date().toISOString(), not_updated = [];
+            const { data } = req.body, DateCreated = new Date().toISOString(), not_updated = [], crntId = req.user.user;
+            if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
+            if(!await isPermission(crntId, ACTION.t004.updt)) return res.status(400).json({ message: err_msg.e00x24});
             if (!Array.isArray(data)) return res.status(400).json({ message: err_msg.e00x23 });
             const type = [ Int, Int, Decimal(18, 5), DateTime ];
             for (let record of data) {
