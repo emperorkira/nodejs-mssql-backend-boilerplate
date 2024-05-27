@@ -4,9 +4,10 @@
   "version": "1.0.0",
   "description": "nodejs_mssql_backend_boilerplate",
   "type": "module",
-  "main": "src/index.js",
+  "main": "server.js",
   "scripts": {
     "start": "nodemon server.js",
+    "test": "nodemon src/test/run.js",
     "lint": "echo \"No linting configured\""
   },
   "keywords": [],

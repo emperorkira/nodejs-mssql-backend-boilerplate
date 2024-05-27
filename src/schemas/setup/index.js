@@ -5,3 +5,4 @@ export * from './permission_schema.js';
 export * from './product_schema.js';
 export * from './role_schema.js';
 export * from './user_schema.js';
+export * from './notification_schema.js';

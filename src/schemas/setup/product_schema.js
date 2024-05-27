@@ -7,10 +7,6 @@ export const product_schema = Joi.object({
   Category: Joi.string().required(),
   Price: Joi.number().precision(5).required(),
   IsDeleted: Joi.number().integer(),
-  DeletedBy: Joi.number().integer().allow(null),
-  CreatedBy: Joi.number().integer().allow(null),
-  DateCreated: Joi.date(),
-  UpdatedBy: Joi.number().integer().allow(null),
-  DateUpdated: Joi.date().allow(null),
+  DeletedBy: Joi.number().integer().allow(null)
 });
 

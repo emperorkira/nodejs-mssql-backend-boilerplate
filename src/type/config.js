@@ -2,10 +2,10 @@ import { config as dotenvConfig } from 'dotenv';
 dotenvConfig({ path: '../../.env' });
 
 export const config = {
-    user: process.env.DB_USER,
-    password: process.env.DB_PASS,
-    server: process.env.DB_SERVER,
-    database: process.env.DB_NAME,
+    user:  String(process.env.DB_USER) || 'sa',
+    password:  String(process.env.DB_PASS),
+    server: String(process.env.DB_SERVER) || 'localhost',
+    database:  String(process.env.DB_NAME),
     options: {
         trustedconnection: true,
         enableArithAbort: true,

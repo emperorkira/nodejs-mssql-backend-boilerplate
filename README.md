@@ -12,5 +12,12 @@ A list of technologies used within the project:
 2. npm run start
 
 
-## TO DO
-- Update the ClientLine Id to Identity Yes
+## CHANGES LOG
+
+- [#3] Update the ClientLine Id to Identity Yes
+- [REASON] The Id is set to No unique identity, and not auto increment
+- [STATUS] DONE
+
+- [#4] Remove Code field in Permission table 
+- [REASON] The code in permission is no use
+- [STATUS] DONE

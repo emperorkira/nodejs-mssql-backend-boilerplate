@@ -13,12 +13,13 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
             if(!await isPermission(crntId, ACTION.t001.ls)) return res.status(400).json({ message: err_msg.e00x24});
             const result = await GET.record_by_query(QUERY.q01x001);
-            if (!result) return res.status(400).json({ message: err_msg.e00x23 });
+            if (!result || result.length < 1) return res.status(400).json({ message: err_msg.e00x23 });
             return res.status(200).json({ data: result, message: success_msg.s00x00 });
         } catch(error) {
             return res.status(500).json({ message: err_msg.e00x02 });
         }
     }; // END HERE
+
     // WORKING AS EXPECTED
     export const get_accessright = async (req, res) => {
         try {

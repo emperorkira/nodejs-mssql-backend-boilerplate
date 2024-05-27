@@ -5,9 +5,5 @@ export const department_schema = Joi.object({
     Name: Joi.string().required(),
     Description: Joi.string().required(),
     IsDeleted: Joi.number().integer().allow(null),
-    DeletedBy: Joi.number().integer().allow(null),
-    CreatedBy: Joi.number().allow(null),
-    DateCreated: Joi.date(),
-    UpdatedBy: Joi.number().allow(null),
-    DateUpdated: Joi.date()
+    DeletedBy: Joi.number().integer().allow(null)
 });

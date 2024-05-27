@@ -12,18 +12,13 @@ export const client_schema = Joi.object({
     DateBCSExpiry: Joi.date(),
     DateBCSRenewal: Joi.date(),
     IsDeleted: Joi.number().integer(),
-    DeletedBy: Joi.number().integer().allow(null),
-    CreatedBy: Joi.number().integer(),
-    DateCreated: Joi.date(),
-    UpdatedBy: Joi.number().integer().allow(null),
-    DateUpdated: Joi.date().allow(null),
+    DeletedBy: Joi.number().integer().allow(null)
   });
   
   export const clientline_schema = Joi.object({
     Id: Joi.number().integer().required(),
     ClientId: Joi.number().integer().allow(null),
     ProductId: Joi.number().integer().required().allow(null),
-    Quantity: Joi.number().precision(5).allow(null),
-    DateCreated: Joi.date().allow(null),
+    Quantity: Joi.number().precision(5).allow(null)
   });
   

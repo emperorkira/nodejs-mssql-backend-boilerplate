@@ -5,7 +5,7 @@ export const user_fields = [ 'Code', 'Username', 'Password', 'Firstname', 'Middl
 export const client_fields = ['Code', 'Name', 'Address', 'Email', 'ContactPerson', 'MobileNumber', 'LandlineNumber', 'DateSoftwareAcceptance', 'DateBCSRenewal', 'DateBCSExpiry', 'IsDeleted', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated'];
 export const clientline_fields = ['ClientId' , 'ProductId' , 'Quantity', 'DateCreated'];
 export const department_fields = [ 'Code', 'Name', 'Description', 'IsDeleted', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated' ];
-export const permission_fields = [ 'Code', 'RoleId', 'AccessRightId', 'IsDeleted', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated'];
+export const permission_fields = [ 'RoleId', 'AccessRightId', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated'];
 export const product_fields = [ 'Code',  'Name', 'Description', 'Category', 'Price', 'IsDeleted', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated'];
 export const role_fields = [ 'Code', 'Name', 'Description', 'IsDeleted', 'CreatedBy', 'DateCreated',  'UpdatedBy', 'DateUpdated'];
 

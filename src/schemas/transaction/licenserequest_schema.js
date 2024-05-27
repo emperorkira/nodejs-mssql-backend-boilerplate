@@ -9,10 +9,6 @@ export const licenserequest_schema = Joi.object({
     ProductKey: Joi.string().required(),
     IsApprove: Joi.number().integer().required(),
     IsDeleted: Joi.number().integer(),
-    DeletedBy: Joi.number().integer().required(),
-    CreatedBy: Joi.number().integer(),
-    DateCreated: Joi.date(),
-    UpdatedBy: Joi.number().integer().allow(null),
-    DateUpdated: Joi.date().allow(null),
+    DeletedBy: Joi.number().integer().required()
   });
   

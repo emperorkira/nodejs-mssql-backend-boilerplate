@@ -16,9 +16,5 @@ export const user_schema = Joi.object({
     RoleId: Joi.number().integer().allow(null),
     isDeactivated: Joi.number().integer().required(),
     IsDeleted: Joi.number().integer(),
-    DeletedBy: Joi.number().integer().allow(null),
-    CreatedBy: Joi.number().integer(),
-    DateCreated: Joi.date(),
-    UpdatedBy: Joi.number().integer().allow(null),
-    DateUpdated: Joi.date().allow(null),
+    DeletedBy: Joi.number().integer().allow(null)
   });
