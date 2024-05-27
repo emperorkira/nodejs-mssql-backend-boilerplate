@@ -1,6 +1,12 @@
-import { conn } from '../database/index.js';
-import sql from 'mssql';
-export const { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request } = sql;
+  /**
+   * AUTHOR       : Mark Dinglasa
+   * COMMENT/S    : N/A
+   * CHANGES      : N/A
+   * LOG-DATE     : 2024-05-27 11:48PM
+  */
+  import { conn } from '../database/index.js';
+  import sql from 'mssql';
+  export const { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request } = sql;
 
 export class UPDATE {
     /**
@@ -17,9 +23,7 @@ export class UPDATE {
         try {
           if (!Id) throw new Error('Id field is missing.');
           if (!Table) throw new Error('Table name field is missing.');
-          if (!Array.isArray(Field) || !Array.isArray(Data) || !Array.isArray(Type) || Field.length !== Data.length || Field.length !== Type.length) {
-            throw new Error('Field, Data, or Type arrays are either not arrays or have different lengths.');
-          }
+          if (!Array.isArray(Field) || !Array.isArray(Data) || !Array.isArray(Type) || Field.length !== Data.length || Field.length !== Type.length) throw new Error('Field, Data, or Type arrays are either not arrays or have different lengths.');
           pool = await conn();
           pool.setMaxListeners(15);
           const request = pool.request();
@@ -30,7 +34,6 @@ export class UPDATE {
           request.input('Id', Int, Id);
           const query = `UPDATE [dbo].[${Table}] SET ${setExpressions} WHERE Id = @Id`;
           const result = await request.query(query);
-    
           if (result.rowsAffected[0] > 0) flag = true;
           return flag;
         } catch (error) {
@@ -79,16 +82,12 @@ export class UPDATE {
           flag = true;
           return flag;
       } catch (error) {
-          if (transaction) {
-              await transaction.rollback();
-          }
+          if (transaction) { await transaction.rollback(); }
           console.log(`Error UPDATE.records: ${error.message}`);
           return flag;
       } finally {
           try {
-              if (pool) {
-                  await pool.close();
-              }
+              if (pool) { await pool.close(); }
           } catch (error) {
               throw new Error(`Error closing database connection (update): ${error.message}`);
           }
@@ -110,30 +109,18 @@ export class UPDATE {
             if (!Table) throw new Error('Table is missing or empty.');
             if (!Array.isArray(Ids) || Ids.length === 0) throw new Error('Ids parameter is missing or empty.');
             if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length) throw new Error('Parameters are not arrays or have different lengths.');
-    
             pool = await conn();
             pool.setMaxListeners(15);
             transaction = new sql.Transaction(pool);
-    
             await transaction.begin();
             const request = new sql.Request(transaction);
-    
-            // Use a parameterized query to prevent SQL injection
             const idParams = Ids.map((_, index) => `@Id${index}`).join(', ');
-            Ids.forEach((id, index) => {
-                request.input(`Id${index}`, sql.Int, id);
-            });
-    
+            Ids.forEach((id, index) => { request.input(`Id${index}`, sql.Int, id); });
             const setExpressions = Field.map((field, index) => `${field} = @${field}`).join(', ');
-            Field.forEach((field, index) => {
-                request.input(field, Type[index], Data[index]);
-            });
-    
+            Field.forEach((field, index) => { request.input(field, Type[index], Data[index]); });
             const updateQuery = `UPDATE ${Table} SET ${setExpressions} WHERE Id IN (${idParams})`;
             const result = await request.query(updateQuery);
-    
             if (result.rowsAffected[0] > 0) flag = true;
-    
             await transaction.commit();
             return flag;
         } catch (error) {
@@ -142,10 +129,7 @@ export class UPDATE {
             return flag;
         } finally {
             try {
-                if (pool) {
-                    await pool.close();
-                    pool = null;
-                }
+                if (pool) { await pool.close(); pool = null; }
             } catch (error) {
                 throw new Error(`Error closing database pool (record_by_ids): ${error.message}`);
             }

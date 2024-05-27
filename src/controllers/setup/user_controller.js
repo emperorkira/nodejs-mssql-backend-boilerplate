@@ -1,10 +1,16 @@
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
 
-import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'
-import { err_msg, success_msg, tbl, QUERY } from '../../shared/index.js';
-import { user_schema } from '../../schemas/index.js';
-import { generateCode, hashPassword, isPermission, isDefaultRecord, isFound, find_by_fields } from '../../functions/index.js';
-import { user_fields, ACTION } from '../../type/index.js';
-import sql from 'mssql';
+    import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'
+    import { err_msg, success_msg, tbl, QUERY } from '../../shared/index.js';
+    import { user_schema } from '../../schemas/index.js';
+    import { generateCode, hashPassword, isPermission, isDefaultRecord, isFound, find_by_fields } from '../../functions/index.js';
+    import { user_fields, ACTION } from '../../type/index.js';
+    import sql from 'mssql';
 
     const { Int, NVarChar, DateTime, } = sql;
 
@@ -17,7 +23,7 @@ import sql from 'mssql';
             const user = await GET.record_by_id(crntId, tbl.t014);
             if (!user) return res.status(400).json({ message: err_msg.e00x05});
             return res.status(200).json({ data: user, message: success_msg.s00x00});
-        } catch(error){
+        } catch(error) {
             return res.status(500).json({ message: err_msg.e00x02});
         }
     } // END HERE

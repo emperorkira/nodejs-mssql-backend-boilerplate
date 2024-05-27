@@ -1,112 +1,102 @@
-import { conn } from '../database/index.js';
-import sql from 'mssql';
-export const { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request} = sql;
-
-export class ADD {
   /**
-   * Insert one record
-   * @param {string} Table - The name of the table.
-   * @param {Array} Field - An array of field names.
-   * @param {Array} Type - An array of SQL data types corresponding to the fields.
-   * @param {Array} Data - An array of data values corresponding to the fields.
-   * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
-   */
-  static async record(Table = '', Field = [], Type = [], Data = []) {
-    let pool, flag = false;
-    try {
-      if (!Table) throw new Error('Table name field is missing.');
-      if (!Field || !Data || Field.length !== Data.length || Field.length !== Type.length) {
-        throw new Error('Parameter is empty, or their lengths do not match');
-      }
+   * AUTHOR       : Mark Dinglasa
+   * COMMENT/S    : N/A
+   * CHANGES      : N/A
+   * LOG-DATE     : 2024-05-27 11:48PM
+  */
 
-      pool = await conn();
-      pool.setMaxListeners(15);
-      const request = pool.request();
-      const fieldNames = Field.join(', ');
-      const fieldParams = Field.map(field => `@${field}`).join(', ');
+  import { conn } from '../database/index.js';
+  import sql from 'mssql';
+  export const { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request} = sql;
 
-      const query = `INSERT INTO [dbo].[${Table}](${fieldNames}) VALUES (${fieldParams})`;
-
-      Field.forEach((field, index) => {
-        if (Data[index] === undefined) {
-          throw new Error(`Data for field '${field}' is undefined`);
-        }
-        request.input(field, Type[index], Data[index]);
-      });
-
-      const result = await request.query(query);
-      if (result.rowsAffected[0] > 0) flag = true;
-      return flag;
-    } catch (error) {
-      console.error(`Error in ADD.record: ${error.message}`);
-      return flag;
-    } finally {
+  export class ADD {
+    /**
+     * Insert one record
+     * @param {string} Table - The name of the table.
+     * @param {Array} Field - An array of field names.
+     * @param {Array} Type - An array of SQL data types corresponding to the fields.
+     * @param {Array} Data - An array of data values corresponding to the fields.
+     * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
+     */
+    static async record(Table = '', Field = [], Type = [], Data = []) {
+      let pool, flag = false;
       try {
+        if (!Table) throw new Error('Table name field is missing.');
+        if (!Field || !Data || Field.length !== Data.length || Field.length !== Type.length) throw new Error('Parameter is empty, or their lengths do not match');
+        pool = await conn();
+        pool.setMaxListeners(15);
+        const request = pool.request();
+        const fieldNames = Field.join(', ');
+        const fieldParams = Field.map(field => `@${field}`).join(', ');
+        const query = `INSERT INTO [dbo].[${Table}](${fieldNames}) VALUES (${fieldParams})`;
+        Field.forEach((field, index) => {
+          if (Data[index] === undefined) {
+            throw new Error(`Data for field '${field}' is undefined`);
+          }
+          request.input(field, Type[index], Data[index]);
+        });
+        const result = await request.query(query);
+        if (result.rowsAffected[0] > 0) flag = true;
+        return flag;
+      } catch (error) {
+        console.error(`Error in ADD.record: ${error.message}`);
+        return flag;
+      } finally {
+        try {
+          if (pool) {
+            await pool.close();
+            pool = null;
+          }
+        } catch (error) {
+          throw new Error(`Error closing database ADD.record: ${error.message}`);
+        }
+      }
+    } // END FUNCTION
+
+    /**
+     * Insert multiple records in bulk
+     * @param {string} Table - The name of the table.
+     * @param {Array} Fields - An array of field names.
+     * @param {Array} Types - An array of SQL data types corresponding to the fields.
+     * @param {Array} dataList - An array of data values corresponding to the fields.
+     * @returns {Promise<boolean>} - Returns true if the records are successfully inserted.
+     */
+    static async records(Table = '', Fields = [], Types = [], dataList = []) {
+      let pool, transaction;
+      try {
+        if (!Table) throw new Error('Table name field is missing.');
+        if (!Fields || !dataList || dataList.length === 0 || Fields.length !== Types.length) throw new Error('Parameter is empty, or their lengths do not match');
+        pool = await conn();
+        pool.setMaxListeners(15);
+        transaction = new Transaction(pool);
+        await transaction.begin();
+        const batchSize = 15;
+        for (let i = 0; i < dataList.length; i += batchSize) {
+          const batch = dataList.slice(i, i + batchSize);
+          const request = new Request(transaction);
+          const query_fields = Fields.join(', ');
+          const query_values = batch.map((_, rowIndex) => `(${Fields.map((field, fieldIndex) => `@${field}${rowIndex}${fieldIndex}`).join(', ')})`).join(', ');
+          const query = `INSERT INTO [dbo].[${Table}] (${query_fields}) VALUES ${query_values}`;
+          batch.forEach((data, rowIndex) => {
+            Fields.forEach((field, fieldIndex) => {
+              request.input(`${field}${rowIndex}${fieldIndex}`, Types[fieldIndex], data[fieldIndex]);
+            });
+          });
+          await request.query(query);
+        }
+        await transaction.commit();
+        return true;
+      } catch (error) {
+        if (transaction) { await transaction.rollback(); }
+        console.error(`Error in ADD.bulkInsert: ${error.message}`);
+        return false;
+      } finally {
         if (pool) {
           await pool.close();
-          pool = null;
         }
-      } catch (error) {
-        throw new Error(`Error closing database ADD.record: ${error.message}`);
       }
-    }
-  } // END FUNCTION
-
-  /**
-   * Insert multiple records in bulk
-   * @param {string} Table - The name of the table.
-   * @param {Array} Fields - An array of field names.
-   * @param {Array} Types - An array of SQL data types corresponding to the fields.
-   * @param {Array} dataList - An array of data values corresponding to the fields.
-   * @returns {Promise<boolean>} - Returns true if the records are successfully inserted.
-   */
-  static async records(Table = '', Fields = [], Types = [], dataList = []) {
-    let pool, transaction;
-    try {
-      if (!Table) throw new Error('Table name field is missing.');
-      if (!Fields || !dataList || dataList.length === 0 || Fields.length !== Types.length) {
-        throw new Error('Parameter is empty, or their lengths do not match');
-      }
-
-      pool = await conn();
-      pool.setMaxListeners(15);
-      transaction = new Transaction(pool);
-      await transaction.begin();
-      
-      const batchSize = 15;
-      for (let i = 0; i < dataList.length; i += batchSize) {
-        const batch = dataList.slice(i, i + batchSize);
-        const request = new Request(transaction);
-
-        const query_fields = Fields.join(', ');
-        const query_values = batch.map((_, rowIndex) => `(${Fields.map((field, fieldIndex) => `@${field}${rowIndex}${fieldIndex}`).join(', ')})`).join(', ');
-
-        const query = `INSERT INTO [dbo].[${Table}] (${query_fields}) VALUES ${query_values}`;
-
-        batch.forEach((data, rowIndex) => {
-          Fields.forEach((field, fieldIndex) => {
-            request.input(`${field}${rowIndex}${fieldIndex}`, Types[fieldIndex], data[fieldIndex]);
-          });
-        });
-
-        await request.query(query);
-      }
-
-      await transaction.commit();
-      return true;
-    } catch (error) {
-      if (transaction) {
-        await transaction.rollback();
-      }
-      console.error(`Error in ADD.bulkInsert: ${error.message}`);
-      return false;
-    } finally {
-      if (pool) {
-        await pool.close();
-      }
-    }
-  } // END HERE
-}; // END CLASS
+    } // END HERE
+  }; // END CLASS
 
 /*
 // Unit Test for ADD Class Functions

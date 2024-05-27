@@ -1,10 +1,15 @@
-
-
-import sql from 'mssql'; import crypto from 'crypto'; import jwt from 'jsonwebtoken'; 
-import { GET, ADD } from '../models/index.js'
-import { token, default_records, audittrail_fields } from '../type/index.js';
-import { tbl, QUERY } from '../shared/index.js'; 
-import { audittrail_schema } from '../schemas/index.js';
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+   
+    import sql from 'mssql'; import crypto from 'crypto'; import jwt from 'jsonwebtoken'; 
+    import { GET, ADD } from '../models/index.js'
+    import { token, default_records, audittrail_fields } from '../type/index.js';
+    import { tbl, QUERY } from '../shared/index.js'; 
+    import { audittrail_schema } from '../schemas/index.js';
 
     const { Int, NVarChar, DateTime } = sql;
 

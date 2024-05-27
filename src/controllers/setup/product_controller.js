@@ -1,8 +1,15 @@
-import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'; import sql from 'mssql';
-import { err_msg, success_msg, QUERY, tbl} from '../../shared/index.js';
-import { product_fields, ACTION} from '../../type/index.js';
-import { product_schema } from '../../schemas/index.js';
-import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } from '../../functions/index.js';
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+    
+    import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'; import sql from 'mssql';
+    import { err_msg, success_msg, QUERY, tbl} from '../../shared/index.js';
+    import { product_fields, ACTION} from '../../type/index.js';
+    import { product_schema } from '../../schemas/index.js';
+    import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } from '../../functions/index.js';
 
     const { Int, NVarChar, DateTime, Decimal  } = sql;
 

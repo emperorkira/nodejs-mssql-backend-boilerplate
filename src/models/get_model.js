@@ -1,6 +1,12 @@
-import { conn } from '../database/index.js';
-import sql from 'mssql'; 
-export const { Int, NVarChar } = sql;
+  /**
+   * AUTHOR       : Mark Dinglasa
+   * COMMENT/S    : N/A
+   * CHANGES      : N/A
+   * LOG-DATE     : 2024-05-27 11:48PM
+  */
+  import { conn } from '../database/index.js';
+  import sql from 'mssql'; 
+  export const { Int, NVarChar } = sql;
 
 export class GET {
   /**

@@ -1,3 +1,9 @@
+/**
+ * AUTHOR       : Mark Dinglasa
+ * COMMENT/S    : N/A
+ * CHANGES      : N/A
+ * LOG-DATE     : 2024-05-27 11:48PM
+*/
 import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'; import sql from 'mssql';
 import { err_msg, success_msg, QUERY, tbl} from '../../shared/index.js';
 import { accessrights_fields, ACTION} from '../../type/index.js';
@@ -61,12 +67,9 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             if(!crntId) return res.status(400).json({ message: err_msg.e00x26});
             const { error } = accessright_schema.validate({Name, Description});
             if (error) return res.status(400).json({ message: err_msg.e00x25 });
-            if (!Name || !Description) return res.status(400).json({ message: err_msg.e00x08 });
             if (await find_by_fields(QUERY.q00x001, ['Name', 'Id'], [NVarChar(50), Int], [Name, Id])) return res.status(400).json({ message: err_msg.e00x06 });
-            const fieldsToRemove = ['Code', 'CreatedBy', 'DateCreated'];
-            const updated_fields = accessrights_fields.filter(field => !fieldsToRemove.includes(field));
-            const type = [NVarChar(50), NVarChar(50), Int, DateTime];
-            const data = [Name, Description, current_user, current_date];
+            const updated_fields = accessrights_fields.filter(field => !['Code', 'CreatedBy', 'IsDeleted', 'DateCreated'].includes(field));
+            const type = [NVarChar(50), NVarChar(50), Int, DateTime], data = [Name, Description, current_user, current_date];
             if (!(await UPDATE.record(Id, tbl.t001, updated_fields, type, data))) return res.status(400).json({ message: err_msg.e00x03 });
             return res.status(200).json({ message: success_msg.s00x04 });
         } catch(error) {
@@ -76,10 +79,9 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
     // WORKING AS EXPECTED
     export const remove_accessright = async (req, res) => {
         try {
-            const crntId = req.user.user;
+            const crntId = req.user.user, { Id } = req.params;
             if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
             if(!await isPermission(crntId, ACTION.t001.rmv)) return res.status(400).json({ message: err_msg.e00x24});
-            const { Id } = req.params;
             if (!Id) return res.status(400).json({ message: err_msg.e00x07 });
             if (!(await isFound(tbl.t001, ['Id'], [Int], [Id]))) return res.status(400).json({ message: err_msg.e00x05 });
             if (await isDefaultRecord(Id, tbl.t001) || await isFound(tbl.t009, ['AccessRightId'], [Int], [Id])) return res.status(400).json({ message: err_msg.e00x04});
@@ -129,13 +131,12 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
     // WORKING AS EXPECTED
     export const trash_multiple_accessright = async (req, res) => {
         try {
-            const crntId = req.user.user;
+            const crntId = req.user.user, { data } = req.body, to_move = [];
             if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
             if(!await isPermission(crntId, ACTION.t001.rmvs)) return res.status(400).json({ message: err_msg.e00x24});
-            const { Ids } = req.body, to_move = [];
             if (!to_move) return res.status(200).json({ message:' err_msg.e00x23' });
-            if (!Ids || !Array.isArray(Ids) || Ids.length === 0) return res.status(400).json({ message: err_msg.e00x07 });
-            for (let item of Ids) {
+            if (!data || !Array.isArray(data) || data.length === 0) return res.status(400).json({ message: err_msg.e00x07 });
+            for (let item of data) {
                 const exists = await isFound(tbl.t001, ['Id'], [Int], [item.Id]);
                 const isDefault = await isDefaultRecord(item.Id, tbl.t001);
                 const hasTransactions = await isFound(tbl.t009, ['AccessRightId'], [Int], [item.Id]);
@@ -148,3 +149,6 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             return res.status(500).json({ message: err_msg.e00x02 });
         }
     }; // END HERE
+
+
+  

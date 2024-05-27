@@ -1,26 +1,31 @@
-import { conn } from '../database/index.js';
-import sql from 'mssql'; 
-export const { Int, NVarChar } = sql;
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+
+    import { conn } from '../database/index.js';
+    import sql from 'mssql'; 
+    export const { Int, NVarChar } = sql;
 
 export class DELETE {
-  /**
-   * Remove specific record from a given Id.
-   * @param {number} Id
-   * @param {string} Table
-   * @returns {Promise<Boolean>}
+    /**
+     * Remove specific record from a given Id.
+     * @param {number} Id
+     * @param {string} Table
+     * @returns {Promise<Boolean>}
    */
     static async record_by_id(Id = 0, Table = '') {
         let pool, flag = false; Id = parseInt(Id, 10);
         try {
             if (typeof Id !== 'number' || !Id) throw new Error('Id must be a number');
             if (typeof Table !== 'string' || !Table) throw new Error('Table must be a string');
-            
             pool = await conn(); 
             pool.setMaxListeners(15);
             const request = pool.request();
             request.input('Id', Int, Id);
             const result = await request.query(`DELETE FROM [dbo].[${Table}] WHERE [Id] = @Id`);
-            
             if (result.rowsAffected[0] === 1) flag = true;
             return flag;
         } catch (error) {
@@ -105,9 +110,7 @@ export class DELETE {
         let pool, flag = false;
         try {
             if (!Table) throw new Error('Table is missing or empty.');
-            if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length || Field.length !== Data.length) {
-                throw new Error('Array parameters are missing, empty, or their lengths do not match.');
-            }
+            if (!Array.isArray(Field) || !Array.isArray(Type) || !Array.isArray(Data) || Field.length !== Type.length || Field.length !== Data.length) throw new Error('Array parameters are missing, empty, or their lengths do not match.');
             pool = await conn(); 
             pool.setMaxListeners(15);
             const request = pool.request();
@@ -115,10 +118,8 @@ export class DELETE {
             Field.forEach((field, index) => {
                 request.input(field, Type[index], Data[index]);
             });
-
             const query = `DELETE FROM [dbo].[${Table}] WHERE ${whereClauses}`;
             const result = await request.query(query);
-
             if (result.rowsAffected[0] > 0) flag = true;
             return flag;
         } catch (error) {
@@ -147,25 +148,18 @@ export class DELETE {
         try {
             if (!Table) throw new Error('Table is missing or empty.');
             if (!Array.isArray(Ids) || Ids.length === 0) throw new Error('Ids parameter is missing or empty.');
-
             pool = await conn();
             pool.setMaxListeners(15);
             transaction = new sql.Transaction(pool);
-
             await transaction.begin();
             const request = new sql.Request(transaction);
-
-            // Use a parameterized query to prevent SQL injection
             const idParams = Ids.map((_, index) => `@Id${index}`).join(', ');
             Ids.forEach((id, index) => {
                 request.input(`Id${index}`, sql.Int, id);
             });
-
             const query = `DELETE FROM [dbo].[${Table}] WHERE Id IN (${idParams})`;
             const result = await request.query(query);
-
             if (result.rowsAffected[0] > 0) flag = true;
-
             await transaction.commit();
             return flag;
         } catch (error) {

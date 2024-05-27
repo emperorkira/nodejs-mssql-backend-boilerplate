@@ -1,7 +1,14 @@
-import { GET, ADD, DELETE, UPDATE} from '../models/index.js'
-import { login_schema } from '../schemas/index.js';
-import { err_msg, success_msg } from '../shared/index.js'
-import { getUserByUsername, comparePassword, generateToken, generateRefreshToken, getUserPermissions } from '../functions/index.js';
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+   
+    import { GET, ADD, DELETE, UPDATE} from '../models/index.js'
+    import { login_schema } from '../schemas/index.js';
+    import { err_msg, success_msg } from '../shared/index.js'
+    import { getUserByUsername, comparePassword, generateToken, generateRefreshToken, getUserPermissions } from '../functions/index.js';
 
     export const login = async (req, res) => {
         try {

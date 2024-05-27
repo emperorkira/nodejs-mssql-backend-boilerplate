@@ -1,4 +1,9 @@
-
+/**
+    * AUTHOR       : Mark Dinglasa
+    * COMMENT/S    : LISTING OF ALL ACTIONS OF USERS
+    * CHANGES      : N/A
+    * LOG-DATE     : 2024-05-27 11:48PM
+*/
 ## SETUP ACTIONS
 FUNCTION                        ACTION-NAME                                 ACTION-DESCRIPTION
 1. [Role]

@@ -1,6 +1,13 @@
-import { token } from '../type/index.js';
-import jwt from 'jsonwebtoken';
-import { err_msg } from '../shared/index.js';
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : N/A
+     * CHANGES      : N/A
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+   
+    import { token } from '../type/index.js';
+    import jwt from 'jsonwebtoken';
+    import { err_msg } from '../shared/index.js';
 
     export const verifyToken = (req, res, next) => {
         const accessToken = req.cookies.accessToken;

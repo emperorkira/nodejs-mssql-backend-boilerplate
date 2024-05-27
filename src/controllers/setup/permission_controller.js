@@ -1,8 +1,15 @@
-import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'; import sql from 'mssql';
-import { err_msg, success_msg, QUERY, tbl} from '../../shared/index.js';
-import { permission_fields, ACTION} from '../../type/index.js';
-import { permission_schema } from '../../schemas/index.js';
-import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } from '../../functions/index.js';
+    /**
+     * AUTHOR       : Mark Dinglasa
+     * COMMENT/S    : 
+     * CHANGES      : Add new function, to display users permissions
+     * LOG-DATE     : 2024-05-27 11:48PM
+    */
+   
+    import { GET, ADD, DELETE, UPDATE} from '../../models/index.js'; import sql from 'mssql';
+    import { err_msg, success_msg, QUERY, tbl} from '../../shared/index.js';
+    import { permission_fields, ACTION} from '../../type/index.js';
+    import { permission_schema } from '../../schemas/index.js';
+    import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } from '../../functions/index.js';
 
     const { Int, NVarChar, DateTime } = sql;
 
@@ -95,6 +102,20 @@ import { isPermission, generateCode, isFound, find_by_fields, isDefaultRecord } 
             if (to_remove.length === 0) return res.status(200).json({ message: err_msg.e00x23 });
             if (!(await DELETE.record_by_ids(to_remove, tbl.t009))) return res.status(200).json({ message: err_msg.e00x03 });
             return res.status(200).json({ message: success_msg.s00x03 });
+        } catch(error) {
+            return res.status(500).json({ message: err_msg.e00x02 });
+        }
+    }; // END HERE
+
+
+    // show in selection of permission
+    export const get_user_accessright = async (req, res) => {
+        try {
+            const crntId = req.user.user;
+            if (!crntId) return res.status(400).json({ message: err_msg.e00x26}); 
+            const result = await GET.record_by_fields(`SELECT [Name],[Description] FROM [AccessRight] WHERE [User]`, [], [], []);
+            if (!result || result.length < 1) return res.status(400).json({ message: err_msg.e00x23 });
+            return res.status(200).json({ data: result, message: success_msg.s00x00 });
         } catch(error) {
             return res.status(500).json({ message: err_msg.e00x02 });
         }
