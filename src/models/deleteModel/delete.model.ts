@@ -5,7 +5,7 @@
      * LOG-DATE     : 2024-05-27 11:48PM
     */
 
-    import { conn } from '../database/index.js';
+    import { conn } from '../../config';
     import sql from 'mssql'; 
     export const { Int, NVarChar } = sql;
 
@@ -16,6 +16,7 @@ export class DELETE {
      * @param {string} Table
      * @returns {Promise<Boolean>}
    */
+  /*
     static async record_by_id(Id = 0, Table = '') {
         let pool, flag = false; Id = parseInt(Id, 10);
         try {
@@ -42,12 +43,13 @@ export class DELETE {
             }
         }
     } // END HERE
-
+*/
   /**
    * Remove specific record from a given query.
    * @param {string} Query
    * @returns {Promise<Boolean>}
    */
+  /*
   static async record_by_query(Query = '') {
     let pool, flag = false;
     try {
@@ -69,12 +71,13 @@ export class DELETE {
         }
     }
   } // END HERE
-  
+  */
     /**
      * Remove specific record from a given query.
      * @param {string} Query
      * @returns {Promise<Boolean>}
      */
+    /*
     static async record_by_idwfields(Id = 0, Field = [], Table = '') {
         let pool, flag = false; Id = parseInt(Id, 10);
         try {
@@ -97,7 +100,7 @@ export class DELETE {
             }
         }
     } // END HERE
-
+*/
     /**
      * Remove multiple records based on given fields.
      * @param {string} Table - The name of the table.
@@ -106,6 +109,7 @@ export class DELETE {
      * @param {Array} Data - An array of data values corresponding to the Field.
      * @returns {Promise<Boolean>}
      */
+    /*
     static async record_by_fields(Table = '', Field = [], Type = [], Data = []) {
         let pool, flag = false;
         try {
@@ -136,13 +140,14 @@ export class DELETE {
             }
         }
     } // END HERE
-
+*/
     /**
      * Remove multiple records based on an array of IDs.
      * @param {Array} Ids - An array of record IDs to delete.
      * @param {string} Table - The name of the table.
      * @returns {Promise<Boolean>}
      */
+    /*
     static async record_by_ids(Ids = [], Table = '') {
         let pool, transaction, flag = false;
         try {
@@ -177,23 +182,5 @@ export class DELETE {
             }
         }
     } // END HERE
+    */
 }; // END CLASS
-
-/**
- *  UNTI TEST FOR [DELETE Class Functions]
- *  WORKING AS EXPECTED
- *  May 21 2024
- * 
-
-(async () => {
-  try {
-    // const data = await DELETE.record_by_id(4027,'[dbo].[User]'); // record_by_id
-    // const data = await DELETE.record_by_query('DELETE FROM [dbo].[User] WHERE Id = 3020'); // record_by_query
-    // const data = await DELETE.record_by_idwfields(3017,'UserId','[dbo].[AuditTrail]'); // record_by_query usually used to delete all linked/sub/children records
-    console.log(data);
-  } catch (error) {
-    console.error(error);
-  }
-})();
- */
-

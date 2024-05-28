@@ -1,4 +1,4 @@
-import { ADD } from '..';
+import { ADD } from './add.model';
 import poolPromise, { conn } from '../../config/database.config';
 import sql from 'mssql';
 

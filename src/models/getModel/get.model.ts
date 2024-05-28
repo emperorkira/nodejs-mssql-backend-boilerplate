@@ -5,27 +5,26 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 
-import { conn } from '../../config';
-
+import poolPromise, { conn } from '../../config/database.config';
+import { Int } from 'mssql';
 export class GET {
   /**
    * Retrieves all records from a given Table.
    * @param {string} Table
    * @returns {Promise<Array>}
    */
-  static async all_record(Table: string = ''): Promise<Array<any>> {
-
+  static async recordsByTable(Table: string = ''): Promise<Array<any>> {
     try {
-      if (typeof Table !== 'string') throw new Error('Table must be a string');
+      if (typeof Table !== 'string' || !Table) return Promise.reject(new Error('Table must be a string'));
       const pool:any = await conn(); 
-      pool.setMaxListeners(15);
       const request = pool.request();
-      const result = await request.query(`SELECT * FROM [dbo].[${Table}]`);
-      return result.recordset || [];
+      const result = await request.query(`SELECT * FROM [${Table}]`);
+      if (!result.recordset || result.recordset.length < 1) return Promise.reject(new Error('Database query returned no results.'));
+      return result.recordset;
     } catch (error:any) {
-      throw new Error(`Error fetching all records from ${Table}: ${error}`);
+      throw new Error(`Error fetching all records from ${Table}: ${error.message}`);
     } 
-  } // END all_records
+  } // END HERE
   
   /**
    * Retrieves 1 specific record from a given Id & Table.
@@ -33,30 +32,22 @@ export class GET {
    * @param {string} Table
    * @returns {Promise<Array>}
    */
-  /*
-  static async record_by_id(Id: number=0, Table: string=''): Promise<Array<any>> {
-    let pool; Id = parseInt(Id, 10);
+  static async recordById(Id: number = 0, Table: string = ''): Promise<any | null> {
     try {
-      if (isNaN(Id)) throw new Error('Id must be a number');
-      if (typeof Table !== 'string') throw new Error('Table must be a string');
-      pool = await conn(); pool.setMaxListeners(15);
-      const request = pool.request();
-      request.input('Id', Int, Id);
-      const result = await request.query(`SELECT * FROM [dbo].[${Table}] WHERE [Id] = @Id`);
-      return (result.recordset.length > 0)? result.recordset[0]:  null;
-    } catch (error) {
-      throw error;
-    } finally {
-      try {
-        if (pool) {
-          await pool.close(); pool = null;
-        }
-      } catch (error) {
-        throw new Error(`Error closing database GET.record_by_id: ${error.message}`);
-      }
+        if (isNaN(Id) || typeof Id !== 'number') throw new Error('Id must be a valid number');
+        if (!Table || typeof Table !== 'string') throw new Error('Table name must be provided as a non-empty string');
+        if (Id <= 0) throw new Error('Id must be a positive non-zero number');
+        const pool:any = await conn();
+        const request = pool.request();
+        request.input('Id', Int, Id);
+        const result = await request.query(`SELECT * FROM [${Table}] WHERE [Id] = @Id`);
+        if (!result.recordset || result.recordset.length < 1) throw new Error('Database query returned no results');
+        return result.recordset.length > 0 ? result.recordset[0] : null;
+    } catch (error:any) {
+        throw new Error(`Error fetching record from ${Table}: ${error.message}`);
     }
-  } // END HERE
-*/
+}// END HERE
+
   /**
    * Retrieves specific record from a given fields.
    * @param {string}  Query
@@ -150,3 +141,8 @@ export class GET {
   } // END HERE
   */
 }; // END CLASS
+/*
+(async() => {
+  const get = await GET.recordById(1, 'User')
+  console.log(get);
+})();*/

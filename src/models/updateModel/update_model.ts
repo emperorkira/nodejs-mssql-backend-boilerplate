@@ -4,7 +4,7 @@
    * CHANGES      : N/A
    * LOG-DATE     : 2024-05-27 11:48PM
   */
-  import { conn } from '../database/index.js';
+  import { conn } from '../../config';
   import sql from 'mssql';
   export const { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request } = sql;
 
@@ -18,6 +18,7 @@ export class UPDATE {
          * @param {Array} Data - An array of data values corresponding to the Field.
          * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
      */
+    /*
     static async record(Id = 0, Table = '', Field = [], Type = [], Data = []) {
         let pool, flag = false; Id = parseInt(Id, 10);
         try {
@@ -49,7 +50,7 @@ export class UPDATE {
           }
         }
       } // END HERE
-
+*/
     /**
      * Edit multiple records with specific conditions
      * @param {Array} ConditionField - An array of objects representing conditions for the WHERE clause. Each object should have keys: field, type, and value.
@@ -59,6 +60,7 @@ export class UPDATE {
      * @param {Array} Data - An array of arrays, each containing data values corresponding to the Field.
      * @returns {Promise<boolean>} - Returns true if the records are successfully updated.
      */
+    /*
     static async records(ConditionField = [], Table = '', Field = [], Type = [], Data = []) {
       let pool, transaction, flag = false; 
       try {
@@ -93,7 +95,7 @@ export class UPDATE {
           }
       }
     } // END HERE
-
+*/
     /**
      * Update multiple records based on an array of IDs.
      * @param {Array} Ids - An array of record IDs to update.
@@ -103,6 +105,7 @@ export class UPDATE {
      * @param {Array} Data
      * @returns {Promise<Boolean>}
      */
+    /*
     static async record_by_ids(Ids = [], Table = '', Field = [], Type = [], Data = []) {
         let pool, transaction, flag = false;
         try {
@@ -135,82 +138,5 @@ export class UPDATE {
             }
         }
     } // END HERE
+    */
 }; // END CLASS
-
-
-// UNIT TEST FOR UPDATE.record
-/*
-(async () => {
-  try {
-
-    const Field = [
-      "Username",
-      "Firstname",
-      "Middlename",
-      "Lastname",
-      "Gender",
-      "Birthdate",
-      "Address",
-      "ContactNumber",
-      "Image",
-      "DepartmentId",
-      "RoleId",
-      "isDeactivated",
-      "UpdatedBy",
-      "DateUpdated"
-  ];
-    const types = [
-      NVarChar(255), NVarChar(50), NVarChar(50), NVarChar(50),
-      NVarChar(50), DateTime, NVarChar(255), NVarChar(50), NVarChar(255), 
-      Int, Int, Int, Int, DateTime
-    ];
-    const data = [
-        'body.Username',' body.Firstname', 'body.Middlename',' body.Lastname',
-        'body.Gender', '2024-05-26', 'body.Address', 'body.ContactNumber', 'body.Image',
-        1, 1, 0, 1, '2024-05-26'
-    ];
-    const res = await UPDATE.record(9,'User', Field, types, data);
-    
-    console.log('Record inserted:', res);
-  } catch (error) {
-    console.error(error);
-  }
-})();*/
-
-// UNIT TEST FOR UPDATE.records
-/*
-(async () => {
-    try {
-      const conditionFields = [
-        { field: 'UserId', type: Int, value: 2 }
-      ];
-      const fields = ['Description', 'Status'];
-      const types = [NVarChar(255), Int];
-      const data = [
-        ['new_username1', 2],
-        ['new_username2', 2],
-        // Add more records as needed
-      ];
-  
-      const result = await UPDATE.records(conditionFields, '[dbo].[Notification]', fields, types, data);
-      console.log('Update result:', result);
-    } catch (error) {
-      console.error(error);
-    }
-  })();
-  */
-/*
-  const to_move = [68, 69, 70]; // Array of IDs to update
-  const tbl_t001 = 'AccessRight'; // Table name
-  const fields = ['IsDeleted', 'DeletedBy']; // Fields to update
-  const types = [sql.Int, sql.Int]; // SQL types of the fields
-  const data = [0, 1]; // Data to update
-
-  (async () => {
-      const result = await UPDATE.record_by_ids(to_move, tbl_t001, fields, types, data);
-      if (result) {
-          console.log('Records updated successfully.');
-      } else {
-          console.log('No records were updated.');
-      }
-  })();*/

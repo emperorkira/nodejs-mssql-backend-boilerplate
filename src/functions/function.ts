@@ -18,9 +18,9 @@
      * @param {String} Username - Username of a user
      * @returns {Promise<JSON>} - returns a data of a user
     */
-    export const getUserByUsername = async (Username = '') => {
+    export const getUserByUsername = async (Username: string = ''): Promise<JSON> => {
         try{
-            if (!Username) return null;
+            if (!Username) return {};
             const user = await GET.record_by_fields(QUERY.q014x002, ['Username'], [NVarChar(255)], [Username]);
             return user;
         }catch(error){
@@ -39,7 +39,7 @@
      * audit trail is where the transaction of each table refers to
      * audit trail cannot be deleted
     */
-    export const logUserAction = async (UserId = 0, Action = '', Record = 0, Table = '') => {
+    export const logUserAction = async (UserId: number = 0, Action: string = '', Record: string = 0, Table: string = ''): Promise<string> => {
         try {
             if (!UserId || !Action || !Record || !Table ) return false;
             const DateCreated = new Date.toISOString();
@@ -59,7 +59,7 @@
      * @param {String} Table - Database table
      * @returns {Promise<String>} - returns true or flase
     */
-    export const isDefaultRecord = async (Id = 0, Table = '') => {
+    export const isDefaultRecord = async (Id: number = 0, Table: string = ''): Promise<string> => {
         let flag = false;
         try {
             if (!Id || !Table) return flag; Id = parseInt(Id, 10); 
@@ -76,7 +76,7 @@
      * @param {number} User - User Id
      * @returns {Promise<String>} - returns a string of encrypted token
      */
-    export const getUserPermissions = async (Id = 0) => {
+    export const getUserPermissions = async (Id = 0): Promise<string> => {
         try {
             if (!Id) return null;
             const userExists = await GET.record_by_id(Id, TABLE.t010);
@@ -94,7 +94,7 @@
      * @param {number} User - User Id
      * @returns {Promise<String>} - returns a string of encrypted token
      */
-    export const generateToken = async (user = 0) => {
+    export const generateToken = async (user = 0): Promise<string> => {
         try {
             if (!user) return null;
             return jwt.sign({ user }, token.SECRET, { expiresIn: "30m" });
@@ -109,7 +109,7 @@
      * @param {number} User - User Id
      * @returns {Promise<String>} - returns a string of encrypted token
      */
-    export const generateRefreshToken = async (user = 0) => {
+    export const generateRefreshToken = async (user = 0): Promise<string> => {
         try {
             if (!user) return null;
             return jwt.sign({ user }, token.REFRESH, { expiresIn: "8h" });
@@ -124,7 +124,7 @@
      * @param {String} hashedPassword - Store encrypted password
      * @returns {Promise<Boolean>} - returns a string of decrypted password
      */
-    export const hashPassword = async (Password = '') => {
+    export const hashPassword = async (Password = ''): Promise<boolean> => {
         try {
             if (!Password) return null;
             const algorithm = "aes-256-cbc";
@@ -144,7 +144,7 @@
      * @param {String} hashedPassword - Store encrypted password
      * @returns {Promise<Boolean>} - returns a string of decrypted password
      */
-    export const decryptPassword = async (encryptedPassword = '') => {
+    export const decryptPassword = async (encryptedPassword = ''): Promise<boolean> => {
         try {
           if (!encryptedPassword) return null;
           const iv = Buffer.from(encryptedPassword.slice(0, 32), "hex");
@@ -165,7 +165,7 @@
      * @param {String} hashedPassword - Store encrypted password
      * @returns {Promise<Boolean>} - returns true or false
      */
-    export const comparePassword = async (Password = '', hashedPassword = '') => {
+    export const comparePassword = async (Password: string = '', hashedPassword: string = ''): Promise<boolean> => {
         try {
           if (!Password || !hashedPassword) {
             console.log('Either password or hashed password is missing');
@@ -185,7 +185,7 @@
      * @param {String} Table - Database table
      * @returns {Promise<String>} - returns a string of 6 digit latest code of a table
      */
-    export const generateCode = async (Table = '') => {
+    export const generateCode = async (Table: string = ''): Promise<string> => {
         try {
           if (!Table) {
             console.log('Table is missing');
@@ -208,7 +208,7 @@
      * @param {Array<any>} Data - The array of data values corresponding to the fields
      * @returns {Promise<boolean>} - Returns true if the record exists, otherwise false
      */
-    export const isFound = async (Table = '', Field = [], Type = [], Data = []) => {
+    export const isFound = async (Table: string = '', Field: Array<string> = [], Type: Array<string> = [], Data: Array<any> = []): Promise<boolean> => {
         let flag = false;
         try {
             if (!Table || !Field || !Type || !Data || Field.length !== Type.length || Field.length !== Data.length) return flag;
@@ -230,7 +230,7 @@
      * @param {Array<any>} Data - The array of data values corresponding to the fields
      * @returns {Promise<boolean>} - Returns true if the record exists, otherwise false
      */
-    export const find_by_fields = async (Query = '', Field = [], Type = [], Data = []) => {
+    export const find_by_fields = async (Query: string = '', Field: Array<string> = [], Type: Array<string> = [], Data: Array<any> = []): Promise<boolean> => {
         let flag = false;
         try {
             if (!Query || !Field || !Type || !Data || Field.length !== Type.length || Field.length !== Data.length) return flag;
@@ -249,7 +249,7 @@
      * @param {string} Action 
      * @returns {Promise<boolean>} - Returns true if the action is found in permissions
      */
-       export const isPermission = async (UserId = 0, Action = '') => {
+       export const isPermission = async (UserId: number = 0, Action: string = ''): Promise<boolean> => {
         try {
             if (!Action || !UserId) return false;
             const hasPermission = await find_by_fields(QUERY.q00x000, ['UserId','Action'], [Int, NVarChar(50)], [UserId, Action]);
