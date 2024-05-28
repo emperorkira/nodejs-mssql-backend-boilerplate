@@ -13,22 +13,22 @@ services:
   db:
     image: postgres:12
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=${DEFAULT_DB}
+      - POSTGRES_USER=
+      - POSTGRES_PASSWORD=
+      - POSTGRES_DB=
     volumes:
       - data:/var/lib/postgresql/data
 
   pg-admin:
     image: dpage/pgadmin4:6
     environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@email.com
-      - PGADMIN_DEFAULT_PASSWORD=admin
-      - PGADMIN_LISTEN_PORT=5050
+      - PGADMIN_DEFAULT_EMAIL=
+      - PGADMIN_DEFAULT_PASSWORD=
+      - PGADMIN_LISTEN_PORT=
     ports:
-      - "5050:5050"
+      - 
     volumes:
-      - pg-admin-data:/var/lib/pgadmin
+      - pg-admin-data:
 
 volumes:
   data:

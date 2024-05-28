@@ -1,12 +1,18 @@
-import db from "./config/database.config";
-import app from "./app";
+/**
+ * AUTHOR       : Mark Dinglasa
+ * COMMENT/S    : SERVER
+ * CHANGES      : N/A
+ * LOG-DATE     : 2024-05-27 11:48PM
+*/
 
-db.sync().then(() => {
-	console.log("connect to db");
-});
+import app from './app'
+import * as dotenv from "dotenv";
+import {conn} from './config'
 
-const port = 9000;
+dotenv.config(); conn();
 
+const port = process.env.PORT || 3500;
+//  LISTING TO PORT
 app.listen(port, () => {
-	console.log("server is running on port " + port);
+  console.log('Server is running on port ' + port);
 });

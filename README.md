@@ -1,49 +1,25 @@
-# Video
 
-### Part 1. [ Build a bullet proof REST API with Typescript, Express.js and Sequelize with Sqlite3 |CRUD REST API ](https://www.youtube.com/watch?v=yFgrSJGNj0E&list=PLYHXTr4kGJjEGnww4pGca4QY7aKBZ6L-I)
+## nodejs-mssql-backend-boilerplate
 
-### Part 2. [ Implement unit test for node rest api](https://www.youtube.com/watch?v=u5zZ_P2wjiA&list=PLYHXTr4kGJjEGnww4pGca4QY7aKBZ6L-I&index=2)
+## TECHNOLOGIES
+A list of technologies used within the project:
+* [MSSQL](https://www.microsoft.com/en-us/download/details.aspx?id=30438):
+* [Express JS](https://nodejs.org/en): Version 4.18.2
+* [Node JS](https://nodejs.org/en): Version 18.16.1
 
-## For development
+## TO START
+1. npm install
+2. npm run start
 
-```
-make dev
-```
 
-## For production
+## CHANGES LOG
 
-```
-make prod
-```
+- [#3] Update the ClientLine Id to Identity Yes
+- [REASON] The Id is set to No unique identity, and not auto increment
+- [STATUS] DONE
 
-# Run test
+- [#4] Remove Code field in Permission table 
+- [REASON] The code in permission is no use
+- [STATUS] DONE
 
-```
-make tests
-```
-
-or
-
-```
-yarn run test
-```
-
-## Core functionality
-
-- [x] set up typescript for dev
-- [x] basic express server with typescript
-- [x] setup database
-- [x] create model
-- [x] create todo
-- [x] read todo with pagination
-- [x] read todo with id
-- [x] update todo
-- [x] delete todo
-
-## Test
-
-- [x] create route
-- [x] read route
-- [ ] read by id route
-- [ ] update route
-- [ ] delete route
+- [#4] Rewrite test as JEST 

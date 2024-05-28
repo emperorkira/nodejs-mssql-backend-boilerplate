@@ -1,16 +1,29 @@
-import * as dotenv from "dotenv";
-import { Sequelize } from "sequelize";
-dotenv.config();
+/**
+ * AUTHOR       : Mark Dinglasa
+ * COMMENT/S    : N/A
+ * CHANGES      : N/A
+ * LOG-DATE     : 2024-05-27 11:48PM
+ */
 
-const db = new Sequelize(
-	process.env.DEFAULT_DB as string,
-	"postgres",
-	"postgres",
-	{
-		host: "db",
-		dialect: "postgres",
-		logging: false,
-	}
-);
+import sql from 'mssql';
+import { config } from '../shared';
 
-export default db;
+const poolPromise = new sql.ConnectionPool(config)
+    .connect()
+    .then(pool => {
+        console.log('Connected to MSSQL');
+        return pool;
+    })
+    .catch(err => {
+        console.error('Database Connection Failed! Bad Config: ', err);
+        throw err;
+    });
+export const conn = async() =>{
+    try {
+        const connection = await poolPromise;
+        return connection;
+    } catch (error:any) {
+        console.log(`Database Connection Error ${error}`);
+    }
+}
+export default { sql, poolPromise };
