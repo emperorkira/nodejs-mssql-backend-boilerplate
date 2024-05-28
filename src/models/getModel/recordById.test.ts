@@ -7,8 +7,7 @@ jest.mock('../../../src/config/', () => ({
 
 describe('GET.recordById', () => {
     const mockRecordset = 'superuser';
-      
-
+    
     beforeAll(() => {
         // Mock the database connection function to return a mock pool
         (conn as jest.Mock).mockReturnValue({

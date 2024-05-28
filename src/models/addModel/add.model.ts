@@ -6,7 +6,7 @@
 */
 
 import { conn } from '../../config';
-import { Int, NVarChar, Decimal, Date, DateTime, Transaction, Request} from 'mssql';
+import { Transaction, Request} from 'mssql';
 
 export class ADD {
   /**
@@ -16,17 +16,17 @@ export class ADD {
    * @param {Array} Type - An array of SQL data types corresponding to the fields.
    * @param {Array} Data - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
-   */
+  */
   static record = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
     let flag = false;
     try {
-      if (!Table) return Promise.reject(new Error('Table name field is missing.'));
+      if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
       if (!Field.every(field => field !== undefined)) {
         const undefinedIndex1:any = Field.findIndex((field, index) => field === undefined);
         return Promise.reject(new Error(`Data for field 'field${parseInt(undefinedIndex1, 10) +1}' is undefined`));
       }
-      if (!Type.every(field => field !== undefined)) {
-        const undefinedIndex2:any = Type.findIndex((field, index) => field === undefined);
+      if (!Type.every((field: undefined) => field !== undefined)) {
+        const undefinedIndex2:any = Type.findIndex((field: undefined, index: any) => field === undefined);
         return Promise.reject(new Error(`Data for field 'field${parseInt(undefinedIndex2, 10) +1}' is undefined`));
       }
       if (!Data.every(field => field !== undefined)) {
@@ -61,15 +61,15 @@ export class ADD {
   /**
    * Insert multiple records in bulk
    * @param {string} Table - The name of the table.
-   * @param {Array} Fields - An array of field names.
-   * @param {Array} Types - An array of SQL data types corresponding to the fields.
+   * @param {Array} Field - An array of field names.
+   * @param {Array} Type - An array of SQL data types corresponding to the fields.
    * @param {Array} dataList - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the records are successfully inserted.
-   */
+  */
   static async records(Table: string = '', Field: Array<any> = [], Type: Array<any> = [], dataList: Array<any> = []): Promise<boolean> {
     let transaction, flag = false;
     try {
-        if (!Table) return Promise.reject(new Error('Table name field is missing.'));
+        if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
         if (!Field.every(field => field !== undefined)) return Promise.reject(new Error('Field array contains undefined values.'));
         if (!Type.every(field => field !== undefined)) return Promise.reject(new Error('Type array contains undefined values.'));
         if (dataList.some(data => data.some((field: undefined) => field === undefined))) {
