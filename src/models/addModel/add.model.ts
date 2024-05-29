@@ -8,7 +8,7 @@
 import { conn } from '../../config';
 import { Transaction, Request} from 'mssql';
 
-export class ADD {
+class Add {
   /**
    * Insert one record
    * @param {string} Table - The name of the table.
@@ -17,47 +17,51 @@ export class ADD {
    * @param {Array} Data - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
   */
-  static record = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
+  record = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
     let flag = false;
     try {
       if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
+
       if (!Field.every(field => field !== undefined)) {
         const undefinedIndex1:any = Field.findIndex((field, index) => field === undefined);
         return Promise.reject(new Error(`Data for field 'field${parseInt(undefinedIndex1, 10) +1}' is undefined`));
       }
+
       if (!Type.every((field: undefined) => field !== undefined)) {
         const undefinedIndex2:any = Type.findIndex((field: undefined, index: any) => field === undefined);
         return Promise.reject(new Error(`Data for field 'field${parseInt(undefinedIndex2, 10) +1}' is undefined`));
       }
+
       if (!Data.every(field => field !== undefined)) {
         const undefinedIndex3:any = Data.findIndex((field, index) => field === undefined);
         return Promise.reject(new Error(`Data for field 'field${parseInt(undefinedIndex3, 10) +1}' is undefined`));
       }
+
       if (!Field || !Data || !Type || Field.length !== Data.length || Field.length !== Type.length) return Promise.reject(new Error('Parameter is empty, or their lengths do not match'));
-      
+
       const pool:any = await conn();
+      if (!pool) return Promise.reject(new Error('Connection failed'));
       const request = pool.request();
 
       const fieldNames = Field.join(', ');
       const fieldParams = Field.map(field => `@${field}`).join(', ');
-      const query = `INSERT INTO [dbo].[${Table}](${fieldNames}) VALUES (${fieldParams})`;
 
+      const query = `INSERT INTO [dbo].[${Table}](${fieldNames}) VALUES (${fieldParams})`;
       Field.forEach((field, index) => {
         if (Data[index] === undefined) return Promise.reject(new Error(`Data for field '${field}' is undefined`));
         request.input(field, Type[index], Data[index]);
       });
 
       const result = await request.query(query);
-      if (result.rowsAffected[0] > 0) {
-        flag = true;
-      }
+      if (result.rowsAffected[0] < 0) return Promise.reject(new Error('Database query returned no results'));
+      flag = true;
+
     } catch (error: any) {
-      throw new Error(`Error in ADD.record: ${error.message}`);
+      throw new Error(`Error in Add.record: ${error.message}`);
     }
     return flag;
   } // END FUNCTION
   
-
   /**
    * Insert multiple records in bulk
    * @param {string} Table - The name of the table.
@@ -66,24 +70,32 @@ export class ADD {
    * @param {Array} dataList - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the records are successfully inserted.
   */
-  static async records(Table: string = '', Field: Array<any> = [], Type: Array<any> = [], dataList: Array<any> = []): Promise<boolean> {
+  async records(Table: string = '', Field: Array<any> = [], Type: Array<any> = [], dataList: Array<any> = []): Promise<boolean> {
     let transaction, flag = false;
     try {
         if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
+
         if (!Field.every(field => field !== undefined)) return Promise.reject(new Error('Field array contains undefined values.'));
+
         if (!Type.every(field => field !== undefined)) return Promise.reject(new Error('Type array contains undefined values.'));
+
         if (dataList.some(data => data.some((field: undefined) => field === undefined))) {
             const undefinedIndex = dataList.findIndex(data => data.some((field: undefined) => field === undefined));
             const undefinedFieldIndex = dataList[undefinedIndex].findIndex((field: undefined) => field === undefined);
             return Promise.reject(new Error(`Data for field '${Field[undefinedFieldIndex]}' in record ${undefinedIndex + 1} is undefined`));
         }
+
         if (!dataList.every(data => data.length === Type.length)) return Promise.reject(new Error('Length of data arrays does not match the length of the Type array.'));
+
         if (!Field.length || !dataList.length || !Type.length || Field.length !== Type.length) return Promise.reject(new Error('Parameter is empty, or their lengths do not match'));
 
         const pool: any = await conn();
+        if (!pool) return Promise.reject(new Error('Connection failed'));
         pool.setMaxListeners(15);
+        
         transaction = new Transaction(pool);
         await transaction.begin();
+
         const batchSize = 15;
         for (let i = 0; i < dataList.length; i += batchSize) {
             const batch = dataList.slice(i, i + batchSize);
@@ -102,8 +114,10 @@ export class ADD {
         flag = true;
     } catch (error: any) {
         if (transaction) await transaction.rollback();
-        throw new Error(`Error in ADD.records: ${error.message}`);
+        throw new Error(`Error in Add.records: ${error.message}`);
     }
     return flag;
-  } // END HERE
+  }
 }; // END CLASS
+
+export default new Add();

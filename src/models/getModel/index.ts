@@ -5,15 +5,17 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 
-import poolPromise, { conn } from '../../config/database.config';
+import { conn } from '../../config/database.config';
 import { Int } from 'mssql';
-export class GET {
+
+class Get {
+
   /**
    * Retrieves all records from a given Table.
    * @param {string} Table
    * @returns {Promise<Array>}
-   */
-  static async recordsByTable(Table: string = ''): Promise<Array<any>> {
+  */
+   async recordsByTable(Table: string = ''): Promise<Array<any>> {
     try {
       if (typeof Table !== 'string' || !Table) return Promise.reject(new Error('Table must be a string'));
       const pool:any = await conn(); 
@@ -24,15 +26,15 @@ export class GET {
     } catch (error:any) {
       throw new Error(`Error fetching all records from ${Table}: ${error.message}`);
     } 
-  } // END HERE
-  
+  }
+
   /**
    * Retrieves 1 specific record from a given Id & Table.
    * @param {number} Id
    * @param {string} Table
    * @returns {Promise<Array>}
-   */
-  static async recordById(Id: number = 0, Table: string = ''): Promise<any | null> {
+  */
+   async recordById(Id: number = 0, Table: string = ''): Promise<any | null> {
     try {
         if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
         if (!Table || typeof Table !== 'string') return Promise.reject( new Error('Table name must be provided as a non-empty string'));
@@ -46,7 +48,7 @@ export class GET {
     } catch (error:any) {
         throw new Error(`Error fetching record from ${Table}: ${error.message}`);
     }
-}// END HERE
+  }
 
   /**
    * Retrieves specific record from a given fields.
@@ -55,9 +57,8 @@ export class GET {
    * @param {Array}   Type
    * @param {Array}   Data
    * @returns {Promise<Array>}
-   */
-
-  static async recordByFields(Query: string='', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<Array<any>> {
+  */
+  async recordByFields(Query: string='', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<Array<any>> {
     try {
       if (!Query || typeof Query !== 'string') return Promise.reject(new Error('Query is empty'));
       if (!Field.every(field => field !== undefined)) {
@@ -87,7 +88,7 @@ export class GET {
     } catch (error:any) {
       throw new Error(`Error function recordByFields : Internal Server Error`);
     } 
-  } // END HERE
+  }
 
   /**
    * Retrieves records from a given Id & Query.
@@ -95,7 +96,7 @@ export class GET {
    * @param {string} Query
    * @returns {Promise<Array>}
    */
-  static async recordByIdAndQuery(Id: number=0, Query: string=''): Promise<Array<any>> {
+   async recordByIdAndQuery(Id: number=0, Query: string=''): Promise<Array<any>> {
     try {
       if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
       if (!Query || typeof Query !== 'string') return Promise.reject( new Error('Query must be provided as a non-empty string'));
@@ -111,14 +112,14 @@ export class GET {
     } catch (error) {
       throw new Error(`Error function recordByIdAndQuery: Internal Server Error`);
     }
-  } // END HERE
+  }
 
   /**
    * Retrieves records from given query
    * @param {string} Query
    * @returns {Promise<Array>}
    */
-  static async recordByQuery(Query: string = ''): Promise<Array<any>> {
+   async recordByQuery(Query: string = ''): Promise<Array<any>> {
     try {
       if (!Query || typeof Query !== 'string') return Promise.reject(new Error('Query must be provided as a non-empty string'));
       const pool:any = await conn(); 
@@ -130,5 +131,7 @@ export class GET {
     } catch (error:any) {
       throw new Error(`Error function recordByQuery: Internal Server Error`);
     } 
-  } // END HERE
+  }
 }; // END CLASS
+
+export default new Get();

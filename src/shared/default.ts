@@ -7,9 +7,13 @@
 
 export const default_records = {
   User: [1],
+  
   Role: [1],
+
   Client: [1],
+
   Department: [1],
+
   AccessRight: [
     1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 
@@ -19,6 +23,7 @@ export const default_records = {
     51, 52, 53, 54, 55, 56, 57, 58, 59, 60,
     61, 62, 63, 64, 65, 66, 67, 
   ],
+
   Permission: [
     1,  2,  3,  4,  5,  6,  7,  8,  9,  10, 
     11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 

@@ -6,6 +6,7 @@
 */
 
 import Joi from 'joi';
+
 export const client_schema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),
     Name: Joi.string().required(),
@@ -20,6 +21,7 @@ export const client_schema = Joi.object({
     IsDeleted: Joi.number().integer(),
     DeletedBy: Joi.number().integer().allow(null)
   });
+  
 export const clientline_schema = Joi.object({
   Id: Joi.number().integer().required(),
   ClientId: Joi.number().integer().allow(null),

@@ -23,7 +23,7 @@ export const config = {
 };
 
 export const token = {
-    SECRET:  process.env.ACCESS_TOKEN_SECRET,
-    REFRESH: process.env.REFRESH_TOKEN_SECRET,
-    ENCRYPTION: process.env.ENCRYPTION_KEY
+    SECRET:  process.env.ACCESS_TOKEN_SECRET  as string,
+    REFRESH: process.env.REFRESH_TOKEN_SECRET as string,
+    ENCRYPTION: process.env.ENCRYPTION_KEY as string,
 }

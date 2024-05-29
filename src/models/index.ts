@@ -1,4 +1,12 @@
-//export * from './get_model';
-//export * from './delete_model';
+/*
+export * from './getModel/get.model';
+export * from './deleteModel/delete.model';
 export * from './addModel/add.model';
-//export * from './update_model';
+export * from './updateModel/update.model';
+*/
+
+import Get from './getModel';
+
+export const get = () => {
+    return Get
+}

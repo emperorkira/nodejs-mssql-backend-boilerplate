@@ -6,6 +6,7 @@
 */
 
 import Joi from 'joi';
+
 export const accessright_schema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),
     Name: Joi.string().max(50).required(),
