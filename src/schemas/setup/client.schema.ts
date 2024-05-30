@@ -7,7 +7,7 @@
 
 import Joi from 'joi';
 
-export const client_schema = Joi.object({
+export const ClientSchema = Joi.object({
     Code: Joi.string().pattern(/^[0-9]{6}$/),
     Name: Joi.string().required(),
     Address: Joi.string().required(),

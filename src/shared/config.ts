@@ -8,7 +8,7 @@
 import * as dotenv from "dotenv";
 dotenv.config();
 
-export const config = {
+export const CONFIG = {
 	user: process.env.DB_USER as string,
 	password: process.env.DB_PASS as string,
 	server: process.env.DB_SERVER as string,

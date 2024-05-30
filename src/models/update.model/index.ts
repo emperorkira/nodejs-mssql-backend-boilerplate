@@ -8,7 +8,7 @@
 import { conn } from '../../config';
 import sql, { Int } from 'mssql';
 
-class Update {
+export class Update {
 
     /**
      * Edit one record
@@ -19,7 +19,7 @@ class Update {
      * @param {Array} Data - An array of data values corresponding to the Field.
      * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
     */
-    async record(Id: number = 0, Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> {
+    static record = async (Id: number = 0, Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
       let flag = false;
       try {
         if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
@@ -76,7 +76,7 @@ class Update {
    * @param {Array} DataList - An array of arrays, each containing data values corresponding to the Field.
    * @returns {Promise<boolean>} - Returns true if the records are successfully updated.
   */
-  async records(ConditionField: Array<any> = [], Table: string = '', Field: Array<any> = [], Type: Array<any> = [], DataList: Array<Array<any>> = []): Promise<boolean> {
+  static records = async (ConditionField: Array<any> = [], Table: string = '', Field: Array<any> = [], Type: Array<any> = [], DataList: Array<Array<any>> = []): Promise<boolean> => {
     let transaction: any, flag = false;
     try {
       if (!Array.isArray(ConditionField) || ConditionField.length === 0) return Promise.reject(new Error('ConditionField array is missing or empty.'));
@@ -148,7 +148,7 @@ class Update {
      * @param {Array} Data
      * @returns {Promise<Boolean>}
     */
-    async recordByIds(Ids: Array<number> = [], Table: string = '', Field: Array<any> = [], Type: Array<any> = [], DataList: Array<Array<any>> = []): Promise<boolean> {
+    static recordByIds = async (Ids: Array<number> = [], Table: string = '', Field: Array<any> = [], Type: Array<any> = [], DataList: Array<Array<any>> = []): Promise<boolean> => {
       let transaction: any, flag = false;
       try {
         if (!Array.isArray(Ids) || Ids.length === 0) {
@@ -226,8 +226,6 @@ class Update {
       return flag;
     }
 }; // END CLASS
-
-export default new Update();
 
 /*
 // Usage example

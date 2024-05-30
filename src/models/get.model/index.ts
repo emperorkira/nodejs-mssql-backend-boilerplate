@@ -8,14 +8,14 @@
 import { conn } from '../../config/database.config';
 import { Int } from 'mssql';
 
-class Get {
+export class Get {
 
   /**
    * Retrieves all records from a given Table.
    * @param {string} Table
    * @returns {Promise<Array>}
   */
-   async recordsByTable(Table: string = ''): Promise<Array<any>> {
+   static recordsByTable = async (Table: string = ''): Promise<Array<any>> => {
     try {
       if (typeof Table !== 'string' || !Table) return Promise.reject(new Error('Table must be a string'));
       const pool:any = await conn(); 
@@ -34,7 +34,7 @@ class Get {
    * @param {string} Table
    * @returns {Promise<Array>}
   */
-   async recordById(Id: number = 0, Table: string = ''): Promise<any | null> {
+   static recordById = async (Id: number = 0, Table: string = ''): Promise<any | null> => {
     try {
         if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
         if (!Table || typeof Table !== 'string') return Promise.reject( new Error('Table name must be provided as a non-empty string'));
@@ -58,7 +58,7 @@ class Get {
    * @param {Array}   Data
    * @returns {Promise<Array>}
   */
-  async recordByFields(Query: string='', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<Array<any>> {
+  static recordByFields = async (Query: string='', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<Array<any>> => {
     try {
       if (!Query || typeof Query !== 'string') return Promise.reject(new Error('Query is empty'));
       if (!Field.every(field => field !== undefined)) {
@@ -96,7 +96,7 @@ class Get {
    * @param {string} Query
    * @returns {Promise<Array>}
    */
-   async recordByIdAndQuery(Id: number=0, Query: string=''): Promise<Array<any>> {
+   static recordByIdAndQuery = async (Id: number=0, Query: string=''): Promise<Array<any>> => {
     try {
       if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
       if (!Query || typeof Query !== 'string') return Promise.reject( new Error('Query must be provided as a non-empty string'));
@@ -119,7 +119,7 @@ class Get {
    * @param {string} Query
    * @returns {Promise<Array>}
    */
-   async recordByQuery(Query: string = ''): Promise<Array<any>> {
+   static recordByQuery = async (Query: string = ''): Promise<Array<any>> => {
     try {
       if (!Query || typeof Query !== 'string') return Promise.reject(new Error('Query must be provided as a non-empty string'));
       const pool:any = await conn(); 
@@ -133,5 +133,3 @@ class Get {
     } 
   }
 }; // END CLASS
-
-export default new Get();

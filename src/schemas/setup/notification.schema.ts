@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 import Joi from 'joi';
-export const notification_schema = Joi.object({
+export const NotificationSchema = Joi.object({
     UserId: Joi.number().integer(),
     Description: Joi.string(),
     LinkedComponent: Joi.string().allow(null),

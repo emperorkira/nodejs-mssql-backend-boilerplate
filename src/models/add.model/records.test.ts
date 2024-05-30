@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-28 03:48PM
 */
 
-import Add from './add.model';
+import Add from '.';
 import poolPromise, { conn } from '../../config/database.config';
 import sql from 'mssql';
 

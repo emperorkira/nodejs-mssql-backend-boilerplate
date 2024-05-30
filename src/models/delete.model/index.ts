@@ -6,9 +6,9 @@
 */
 
 import { conn } from '../../config';
-import sql, { Int, NVarChar, Transaction } from 'mssql'; 
+import sql, { Int, Request, Transaction } from 'mssql'; 
 
-class Delete {
+export class Delete {
 
     /**
      * Remove specific record from a given Id.
@@ -16,7 +16,7 @@ class Delete {
      * @param {string} Table
      * @returns {Promise<Boolean>}
     */
-    async recordById(Id: number = 0, Table: string = ''): Promise<boolean> {
+    static recordById = async (Id: number = 0, Table: string = ''): Promise<boolean> => {
         let flag = false;
         try {
             if (isNaN(Id) || typeof Id !== 'number') return Promise.reject( new Error('Id must be a valid number'));
@@ -67,7 +67,7 @@ class Delete {
      * @param {Array} Data - An array of data values corresponding to the Field.
      * @returns {Promise<Boolean>}
     */
-    async recordByFields(Query: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> {
+    static recordByFields = async (Query: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
         let flag = false;
         try {
             if (!Query || typeof Query !== 'string') return Promise.reject( new Error('Query must be provided as a non-empty string'));
@@ -112,10 +112,10 @@ class Delete {
      * @param {string} Table - The name of the table.
      * @returns {Promise<Boolean>}
     */
-    async recordByIds(Data: Array<any> = [], Table: string = ''): Promise<boolean> {
+    static recordByIds = async (Data: Array<any> = [], Table: string = ''): Promise<boolean> => {
         let transaction, flag = false, res = 0;
         try {
-            // Data = list of Ids => [ {"Id":1}, {"Id":2}, {"Id":3}]
+
             if (typeof Table !== 'string' || !Table) return Promise.reject(new Error('Table name must be provided as a non-empty string'));
 
             if (!Array.isArray(Data) || Data.length === 0) return Promise.reject(new Error('Data parameter is missing or empty.'));
@@ -127,16 +127,16 @@ class Delete {
             const pool: any = await conn();
             if (!pool) return Promise.reject(new Error('Connection failed'));
             
-            transaction = new sql.Transaction(pool);
+            transaction = new Transaction(pool);
             await transaction.begin();
     
             const batchSize = 15;
-            const request = new sql.Request(transaction);
+            const request = new Request(transaction);
             for (let i = 0; i < Data.length; i += batchSize) {
                 const batch = Data.slice(i, i + batchSize);
                 const idParams = batch.map((_, index) => `@Id${i + index}`).join(', ');
                 batch.forEach((idObj, index) => {
-                    request.input(`Id${i + index}`, sql.Int, idObj.Id);
+                    request.input(`Id${i + index}`, Int, idObj.Id);
                 });
                 const query = `DELETE FROM [dbo].[${Table}] WHERE Id IN (${idParams})`;
                 const result = await request.query(query);
@@ -154,39 +154,3 @@ class Delete {
         return flag;
     }
 }; // END CLASS
-
-export default new Delete();
-
-/*
-(async() => {
-    try {
-        const Data1 = [
-            {Id:1}, {Id:2},
-            {Id:3}, {Id:4},
-            {Id:5}, {Id:6},
-            {Id:7}, {Id:8},
-            {Id:9}, {Id:10},
-            {Id:11}, {Id:12},
-            {Id:13}, {Id:14},
-            {Id:15}, {Id:16},
-            {Id:17}, {Id:18},
-            {Id:19}, {Id:20},
-            {Id:21}, {Id:22},
-            {Id:23}, {Id:24},
-            {Id:25}, {Id:26},
-            {Id:27}, {Id:28},
-            {Id:29}, {Id:30},
-            {Id:31}, {Id:32},
-            {Id:33}, {Id:34},
-            {Id:35}, {Id:36},
-            {Id:37}, {Id:38},
-            {Id:39}, {Id:undefined}
-        ];
-
-        const Data2 =  [{Id:undefined}]
-        const result:any = await DELETE.recordByIds(Data1, 'AccessRight');
-        console.log(result);
-    } catch (error:any) {
-        console.log(error);
-    }
-})();*/

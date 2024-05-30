@@ -6,8 +6,9 @@
 */
 
 import Joi from 'joi';
+import { Int, NVarChar, DateTime } from 'mssql';
 
-export const user_schema = Joi.object({
+export const UserSchema = Joi.object({
   Code: Joi.string().pattern(/^[0-9]{6}$/),
   Username: Joi.string().required(),
   Password: Joi.string().required(),
@@ -25,3 +26,13 @@ export const user_schema = Joi.object({
   IsDeleted: Joi.number().integer(),
   DeletedBy: Joi.number().integer().allow(null)
 });
+
+export const UserStructure = (Data:any): any => {
+  return {
+    Id:   { field:'Id', type: Int(), value: Data.Id },
+    Code: { field:'Code', type: NVarChar(50), value: Data.Code },
+  }
+}
+
+
+//update = ( Id, 'Name' '' )

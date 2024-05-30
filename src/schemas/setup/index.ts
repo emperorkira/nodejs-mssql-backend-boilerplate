@@ -1,8 +1,9 @@
-export * from './accessright_schema';
-export * from './client_schema';
-export * from './department_schema';
-export * from './permission_schema';
-export * from './product_schema';
-export * from './role_schema';
-export * from './user_schema';
-export * from './notification_schema';
+
+export * from './client.schema';
+export * from './department.schema';
+export * from './permission.schema';
+export * from './product.schema';
+export * from './role.schema';
+export * from './user.schema';
+export * from './notification.schema';
+export * from './accessRight.schema';

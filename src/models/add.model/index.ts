@@ -8,7 +8,7 @@
 import { conn } from '../../config';
 import { Transaction, Request} from 'mssql';
 
-class Add {
+export class Add {
   /**
    * Insert one record
    * @param {string} Table - The name of the table.
@@ -17,7 +17,7 @@ class Add {
    * @param {Array} Data - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the record is successfully inserted.
   */
-  record = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
+  static record = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
     let flag = false;
     try {
       if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
@@ -70,7 +70,7 @@ class Add {
    * @param {Array} dataList - An array of data values corresponding to the fields.
    * @returns {Promise<boolean>} - Returns true if the records are successfully inserted.
   */
-  async records(Table: string = '', Field: Array<any> = [], Type: Array<any> = [], dataList: Array<any> = []): Promise<boolean> {
+  static records = async (Table: string = '', Field: Array<any> = [], Type: Array<any> = [], dataList: Array<any> = []): Promise<boolean> => {
     let transaction, flag = false;
     try {
         if (!Table || typeof Table !== 'string') return Promise.reject(new Error('Table name field is missing.'));
@@ -119,5 +119,3 @@ class Add {
     return flag;
   }
 }; // END CLASS
-
-export default new Add();

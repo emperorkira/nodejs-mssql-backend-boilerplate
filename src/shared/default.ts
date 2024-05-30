@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 
-export const default_records = {
+export const DEFAULT:any = {
   User: [1],
   
   Role: [1],
