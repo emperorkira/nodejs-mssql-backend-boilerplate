@@ -18,7 +18,8 @@ export class Get {
    static recordsByTable = async (Table: string = ''): Promise<Array<any>> => {
     try {
       if (typeof Table !== 'string' || !Table) return Promise.reject(new Error('Table must be a string'));
-      const pool:any = await conn(); 
+      const pool:any = await conn();
+      if (!pool)  return Promise.reject(new Error(`Connection failed`));
       const request = pool.request();
       const result = await request.query(`SELECT * FROM [${Table}]`);
       if (!result.recordset || result.recordset.length < 1) return Promise.reject(new Error('Database query returned no results.'));
@@ -40,6 +41,7 @@ export class Get {
         if (!Table || typeof Table !== 'string') return Promise.reject( new Error('Table name must be provided as a non-empty string'));
         if (Id < 1) return Promise.reject(new Error('Id must be a positive non-zero number'));
         const pool:any = await conn();
+        if (!pool)  return Promise.reject(new Error(`Connection failed`));
         const request = pool.request();
         request.input('Id', Int, Id);
         const result = await request.query(`SELECT * FROM [${Table}] WHERE [Id] = @Id`);

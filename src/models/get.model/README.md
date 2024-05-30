@@ -10,7 +10,8 @@
         async() => {
             // sample data
             const SampleTableName = 'AccessRight';
-            // take note Id and TableName are required
+
+            // take note TableName is required
             const SampleRecord = await Get.recordByTable(SampleTableName );
             console.log(SampleRecord);
 
@@ -47,14 +48,16 @@
     // sample usage
     (
         async() => {
+
             // sample data
             const SampleId = 7;
             const SampleTableName = 'AccessRight';
+
             // take note Id and TableName are required
             const SampleRecord = await Get.recordById(SampleId, SampleTableName );
             console.log(SampleRecord);
-            // expected output
 
+            // expected output
             SampleRecord = {
                 Id: 7,
                 Name: "Sample"
@@ -68,7 +71,7 @@
     // This function can be use to display the details of a record. Such as profile
 ```
 
-- [x] Get Record By Id
+- [x] Get Record By Fields
 - [x] Tested & Working
 ```
     // instanciate the Class [Get]
@@ -78,13 +81,16 @@
     (
         async() => {
             // sample data
-            const SampleId = 7;
-            const SampleTableName = 'AccessRight';
-            // take note Id and TableName are required
+            const SampleQuery = 'SELECT [Name] FROM [AccessRight] WHERE Id = @Id';
+            const SampleField = ['Id'];
+            const SampleType = [ Int ]; // import Int from mssql
+            const SampleValue = [7]
+
+            // take note all of the parameters are requried
             const SampleRecord = await Get.recordById(SampleId, SampleTableName );
             console.log(SampleRecord);
-            // expected output
 
+            // expected output
             SampleRecord = {
                 Id: 7,
                 Name: "Sample"

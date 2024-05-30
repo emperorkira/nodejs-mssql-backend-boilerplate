@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-28 03:48PM
 */
 
-import Delete from '.'; // Adjust the import path as necessary
+import { Delete } from '.'; // Adjust the import path as necessary
 import { conn } from '../../config'; // Adjust the import path as necessary
 import { ConnectionPool, Request, Int, Transaction } from 'mssql';
 

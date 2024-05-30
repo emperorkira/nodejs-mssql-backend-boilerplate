@@ -6,9 +6,9 @@
  */
 
 import sql from 'mssql';
-import { config } from '../shared';
+import { CONFIG } from '../shared';
 
-const poolPromise = new sql.ConnectionPool(config)
+const poolPromise = new sql.ConnectionPool(CONFIG)
     .connect()
     .then(pool => {
         console.log('Connected to MSSQL');

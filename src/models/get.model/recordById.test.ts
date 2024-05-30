@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-28 03:48PM
 */
 
-import Get from '.';
+import { Get } from '.';
 import { conn } from '../../config';
 
 jest.mock('../../../src/config/', () => ({

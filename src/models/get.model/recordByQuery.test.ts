@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-28 03:48PM
 */
 
-import Get from '.'; // Adjust the import path as necessary
+import { Get } from '.'; // Adjust the import path as necessary
 import { conn } from '../../config'; // Adjust the import path as necessary
 import { ConnectionPool, Request } from 'mssql';
 

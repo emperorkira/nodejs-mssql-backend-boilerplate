@@ -1,4 +1,5 @@
 
+/*
 import Add from '../add.model'
 import { ERROR, TABLE } from '../../shared';
 import { Int, NVarChar, DateTime } from 'mssql'
@@ -65,7 +66,7 @@ export class User {
                 const Create: boolean = await Add.record(TABLE.t014, Field, Type, Value)
 
             }
-           
+            //const updated_user_fields = user_fields.filter(field => !fieldsToRemove.includes(field));
             return true;
         } catch ( error:any) {
             return { message: error.array(), saved: false };
@@ -79,3 +80,4 @@ export class User {
 
 
 // new User(req.body).save('new');
+// res = await User(req.body).save('new).message*/

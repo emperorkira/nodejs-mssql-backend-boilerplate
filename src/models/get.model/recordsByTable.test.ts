@@ -5,7 +5,7 @@
  * LOG-DATE     : 2024-05-28 03:48PM
 */
 
-import Get from '.'; // Import your model function
+import { Get } from '.'; // Import your model function
 import { conn } from '../../config'; // Import database connection function
 
 // Mock the database connection function

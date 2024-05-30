@@ -8,7 +8,7 @@
 import sql from 'mssql'; import crypto from 'crypto'; import jwt from 'jsonwebtoken'; 
 import { Get } from '../../models/';
 import { Finder } from '../'
-import { QUERY, DEFAULT } from '../../shared'; 
+import { QUERY, DEFAULT, TABLE } from '../../shared'; 
 import { Int, NVarChar } from 'mssql';
 
 export class Auth {
@@ -45,5 +45,24 @@ export class Auth {
             console.log('isDefaultRecord Error: ' + error.array());
         } return flag;
     }; 
+
+    /**
+     * Creates a new token
+     * @param {number} User - User Id
+     * @returns {Promise<String>} - returns a string of encrypted token
+    */
+    static getUserPermissions = async (Id = 0): Promise<Array<any>> => {
+        try {
+            if (!Id) return [];
+            const userExists = await Get.recordById(Id, TABLE.t010);
+            if (!userExists) return [];
+            const permissions = await Get.recordByFields(QUERY.q010x001, ['RoleId'], [Int], [Id]);
+            return permissions;
+        } catch (error) {
+            console.error('Error in getUserPermissions:', error);
+            return [];
+        }
+    }; // END HERE
+    
 } // END CLASS
    
