@@ -61,14 +61,15 @@
             const crntId = req.user.user;
             if (!crntId) return res.status(400).json({ message: err_msg.e00x26});
             if(!await isPermission(crntId, ACTION.t014.cr8)) return res.status(400).json({ message: err_msg.e00x24});
-            const body = await req.body, code = await generateCode(tbl.t014), current_date = new Date().toISOString();
-            if (!body.Middlename || body.Middlename === '') body.Middlename = null;
-            if (!body.Image || body.Image === '') body.Image = null;
-            body.Code = code; body.CreatedBy = crntId; body.DateCreated = current_date;
-            const { error } = user_schema.validate(body);
-            if (error) return res.status(400).json({ message: err_msg.e00x25});
-            if(await isFound(tbl.t014, ['Username'], [NVarChar(255)], [body.Username])) return res.status(400).json({ message: err_msg.e00x06});
-            const types = [
+            const body = await req.body
+            //, code = await generateCode(tbl.t014), current_date = new Date().toISOString();
+            //if (!body.Middlename || body.Middlename === '') body.Middlename = null;
+            //if (!body.Image || body.Image === '') body.Image = null;
+            //body.Code = code; body.CreatedBy = crntId; body.DateCreated = current_date;
+            //const { error } = user_schema.validate(body);
+           // if (error) return res.status(400).json({ message: err_msg.e00x25});
+            //if(await isFound(tbl.t014, ['Username'], [NVarChar(255)], [body.Username])) return res.status(400).json({ message: err_msg.e00x06});
+            /*const types = [
                 NVarChar(50), NVarChar(255), NVarChar(255), NVarChar(50), NVarChar(50), 
                 NVarChar(50), NVarChar(50), DateTime, NVarChar(255), NVarChar(255), 
                 NVarChar(50), Int, Int, Int, Int, Int, DateTime, Int, DateTime
@@ -78,8 +79,8 @@
                 code, body.Username, body.Password, body.Firstname, body.Middlename, body.Lastname,
                 body.Gender, body.Birthdate, body.Address, body.ContactNumber, body.Image,
                 body.DepartmentId, body.RoleId, body.isDeactivated, 0, crntId, current_date, null, null
-            ];
-            if (!(await ADD.record(tbl.t014, user_fields, types, data))) return res.status(400).json({ message: err_msg.e00x03});
+            ];*/
+            //if (!(await ADD.record(tbl.t014, user_fields, types, data))) return res.status(400).json({ message: err_msg.e00x03});
             return res.status(200).json({ message: success_msg.s00x02 });
         } catch(error){
             return res.status(500).json({ message: err_msg.e00x02, error: error}); 

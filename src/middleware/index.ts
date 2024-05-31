@@ -7,14 +7,8 @@
 
 import { Request, Response, NextFunction } from 'express';
 import { validationResult } from 'express-validator';
-import { token, ERROR } from '../shared';
+import { token, ERROR, CustomRequest } from '../shared';
 import jwt from 'jsonwebtoken';
-
-interface CustomRequest extends Request {
-  accessToken?: string;
-  refreshToken?: string;
-  user?: any;
-}
 
 class Middleware {
   handleValidationError(req: Request, res: Response, next: NextFunction) {

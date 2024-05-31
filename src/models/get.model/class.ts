@@ -24,7 +24,7 @@ export class Get {
         this.Type = Type || [];
         this.Value = Value || [];
     }
-
+    
     async recordByTable(): Promise<Array<any>> {
         try {
             if (typeof this.Table !== 'string' || !this.Table) return Promise.reject(new Error('Table must be a string'));

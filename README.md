@@ -21,4 +21,8 @@ A list of technologies used within the project:
 - [REASON] The code in permission is no use
 - [STATUS] DONE
 
-- [#4] Rewrite test as JEST 
+- [x] Create test cases for Add Class model
+- [x] Create test cases for Remove Class model
+- [x] Create test cases for Get Class model
+- [x] Create test cases for Update Class model
+- [] CREATE SIMULATION TEST FOR USER CLASS

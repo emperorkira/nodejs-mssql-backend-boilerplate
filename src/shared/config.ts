@@ -19,7 +19,7 @@ export const CONFIG = {
 		encrypt: true,
 		trustServerCertificate: true,
 	},
-	port: parseInt(process.env.DB_PORT || '1433', 10), // Default to port 1433 if not provided
+	port: parseInt(process.env.DB_PORT || '1433', 10) as number, // Default to port 1433 if not provided
 };
 
 export const token = {

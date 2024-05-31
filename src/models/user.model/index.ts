@@ -1,26 +1,27 @@
 
-/*
-import Add from '../add.model'
-import { ERROR, TABLE } from '../../shared';
+
+import { Add, Update, Delete }   from '../'
+import { ERROR, TABLE, SUCCESS, QUERY } from '../../shared';
 import { Int, NVarChar, DateTime } from 'mssql'
-import Finder from '../../functions/finder.helper';
+import { findByFields, generateCode, isFound, isDefaultRecord, hashPassword} from '../../functions/functions';
+import { UserSchema } from '../../schemas';
 
 export class User {
-    private Id: number;
-    private Code: string;       private Username: string;
+    private Id: number;         private Username: string;
     private Password: string;   private Firstname: string;
     private Middlename: string; private Lastname: string;
     private Gender: string;     private Birthdate: Date;
     private Address: string;    private ContactNumber: string;
-    private Image: string;      private DepartmentId: number;
+    private Image: any;         private DepartmentId: number;
     private RoleId: number;     private IsDeactivated: number;
     private IsDeleted: number;  private DeletedBy: number;
-    private CreatedBy: number;  private DateCreated: Date;
-    private UpdatedBy: number;  private DateUpdate: Date;
+    private CreatedBy: number;  private UpdatedBy: number;
+    private UserData: any;      private UserId: any;
 
-    constructor( UserData: any, Action: string ){
+    constructor( UserData: any, UserId?: number ){
+
+        this.UserData = UserData;
         this.Id = UserData.Id || null;
-        this.Code = UserData.Code;
         this.Username = UserData.Username;
         this.Password = UserData.Password;
         this.Firstname = UserData.Firstname;
@@ -34,22 +35,36 @@ export class User {
         this.DepartmentId = UserData.DepartmentId;
         this.RoleId = UserData.RoleId;
         this.IsDeactivated = UserData.IsDeactivated;
-        this.DeletedBy = UserData.DeletedBy || null
+        this.DeletedBy = UserData.DeletedBy || null;
         this.IsDeleted = UserData.IsDeleted || 0;
         this.CreatedBy = UserData.CreatedBy;
-        this.DateCreated = UserData.DateCreated;
         this.UpdatedBy = UserData.UpdatedBy || null;
-        this.DateUpdate = UserData.DateUpdate || null;
+        this.UserId = UserId;
+        
+        if (!(this.Middlename)) this.Middlename = 'null';
+        if (!(this.Image)) this.Image = 'null';
+        if (!this.Id || this.Id === undefined || this.Id === null) this.Id = 0
+
     }
 
-    save = async ( Action:any ): Promise<any> =>{
+    async validate ():Promise<any>{
+        let flag = false;
+        const { error } = UserSchema.validate(this.UserData);
+        if (error) return { result: flag, error: error };
+        if (!this.UserId) return { result: flag, error: 'UserId error' };
+        if (!await isFound(TABLE.t014, ['Id'], [Int], [this.UserId])) return { result: flag, error: 'User not found' };
+        flag = true;
+        return { result: flag };
+    }
+
+    async save(): Promise<any> {
         try {
-            if (!Action) return { message: 'Action is missing', saved: false };
-            if (Action !== 'update' || Action !== 'new') return { message: 'Action refers to create or update', saved: false };
+            this.Password = await hashPassword(this.Password);
+            let Value: Array<any>;
             const Field: Array<string> = [
                 'Code',         'Username',     'Password',     'Firstname',    'Middlename',   'Lastname', 
-                'Gender',       'Birthdate',    'Address',      'ContactNumber','Image',        'DepartmentId', 
-                'RoleId',       'isDeactivated','IsDeleted',    'DeletedBy',    'CreatedBy',    'DateCreated',  
+                'Gender',       'Birthdate',    'Address',      'ContactNumber','Image',        'DepartmentId',
+                'RoleId',       'IsDeactivated','IsDeleted',    'DeletedBy',    'CreatedBy',    'DateCreated',  
                 'UpdatedBy',    'DateUpdated'
             ];
             const Type: Array<any> = [
@@ -58,26 +73,67 @@ export class User {
                 Int,            Int,            Int,            Int,            Int,            DateTime,
                 Int,            DateTime
             ];
-            const Value: Array<any> = [
+            
+            if (this.Id) { //  if Id exists then it is to update else create
+                const tmpField = Field.filter(field => !['Code', 'Password', 'IsDeactivated', 'IsDeleted', 'DeletedBy', 'CreatedBy', 'DateCreated'].includes(field));
+                const indicesToRemove = [0, 2, 13, 14, 15, 16, 17]; indicesToRemove.sort((a, b) => b - a);
+                for (let i = 0; i < indicesToRemove.length; i++) { Type.splice(indicesToRemove[i], 1); }
+                if (await findByFields(QUERY.q014x003, ['Username', 'Id'],[NVarChar(255), Int],[this.Username, this.Id])) return { message: ERROR.e00x27, result: false };
+                if (await isDefaultRecord(this.Id, TABLE.t014)) return { message: ERROR.e00x10, result: false };
+                Value = [ 
+                    this.Username, this.Firstname, this.Middlename, this.Lastname, this.Gender, this.Birthdate, 
+                    this.Address, this.ContactNumber, this.Image,  this.DepartmentId, this.RoleId,
+                    this.UserId, new Date().toISOString(), 
+                ];
+                if (!await Update.record(this.Id, TABLE.t014, tmpField, Type, Value)) return { message: ERROR.e00x03, result: false };
+                return { message: SUCCESS.s00x04, result: true };
+            }   
 
-            ]
-            if (Action === 'create'){
-                if (await Finder.isFound(TABLE.t014, ['Username'], [NVarChar(50)], [this.Username])) return { message: ERROR.e00x06, saved: false };
-                const Create: boolean = await Add.record(TABLE.t014, Field, Type, Value)
+            const Code = await generateCode(TABLE.t014);
+            Value = [ 
+                Code,           this.Username,      this.Password,      this.Firstname,     this.Middlename,    this.Lastname,  
+                this.Gender,    this.Birthdate,     this.Address,       this.ContactNumber, this.Image,         this.DepartmentId, 
+                this.RoleId,    0,                  this.IsDeleted,     0,               this.UserId,     
+                new Date().toISOString(), null, null
+            ];  
 
-            }
-            //const updated_user_fields = user_fields.filter(field => !fieldsToRemove.includes(field));
-            return true;
-        } catch ( error:any) {
-            return { message: error.array(), saved: false };
+            console.log('Field')
+            console.log(Field)
+            console.log('Type')
+            console.log(Type)
+            console.log('Value')
+            console.log(Value)
+            if (await isFound(TABLE.t014, ['Username'], [NVarChar(50)], [this.Username])) return { message: ERROR.e00x06, result: false };
+            if (!await Add.record(TABLE.t014, Field, Type, Value)) return { message: ERROR.e00x03, result: false };
+            return { message: SUCCESS.s00x02, result: true };
+
+        } catch (error:any) {
+            return { message: error.message, result: false };
         }
     }
-    remove(){
 
+    async remove(): Promise<any> {
+        if (!this.Id) return { message: ERROR.e00x07, removed: false };
+        if (!(await isFound(TABLE.t014, ['Id'], [Int], [this.Id]))) return { message: ERROR.e00x05, removed: false };
+        if (await isDefaultRecord(this.Id, TABLE.t014) || await isFound(TABLE.t003, ['UserId'], [Int], [this.Id])) return { message: ERROR.e00x04, removed: false };
+        if (!await Delete.recordById(this.Id, TABLE.t014)) return { message: ERROR.e00x03, removed: false };
+        return { message: SUCCESS.s00x03, result: true };
     }
 
-};
+    async trash(): Promise<any> {
+        if (!this.Id) return { message: ERROR.e00x07, removed: false };
+        if (!(await isFound(TABLE.t014, ['Id'], [Int], [this.Id]))) return { message: ERROR.e00x05, removed: false };
+        if (await isDefaultRecord(this.Id, TABLE.t014) || await isFound(TABLE.t003, ['UserId'], [Int], [this.Id])) return { message: ERROR.e00x04, removed: false };
+        if (!await Update.record(this.Id, TABLE.t014, ['IsDeleted', 'DeletedBy'], [Int, Int], [1, this.UserId])) return { message: ERROR.e00x03, removed: false };
+        return { message: SUCCESS.s00x03, result: true };
+    }
 
+    async changePassword(): Promise<any> {
+        if (!this.Id) return { message: ERROR.e00x07, removed: false };
+        const hashed = await hashPassword(this.Password);
+        if (!await Update.record(this.Id, TABLE.t014, ['Password'], [NVarChar(255)], [hashed])) return { message: ERROR.e00x03, result: true };
+        return { message: SUCCESS.s00x04, result: true };
+    }
 
-// new User(req.body).save('new');
-// res = await User(req.body).save('new).message*/
+}; // END CLASS
+

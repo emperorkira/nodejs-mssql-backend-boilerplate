@@ -22,7 +22,7 @@ export const UserSchema = Joi.object({
   Image: Joi.string().allow(null),
   DepartmentId: Joi.number().integer().allow(null),
   RoleId: Joi.number().integer().allow(null),
-  isDeactivated: Joi.number().integer().required(),
+  IsDeactivated: Joi.number().integer().required(),
   IsDeleted: Joi.number().integer(),
   DeletedBy: Joi.number().integer().allow(null)
 });

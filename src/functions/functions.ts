@@ -5,13 +5,13 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 
-import sql,{ Int, NVarChar, DateTime }  from 'mssql'; 
+import { Int, NVarChar, DateTime }  from 'mssql'; 
 import crypto from 'crypto'; 
-import jwt from 'jsonwebtoken'; 
-import { Get, Add } from '../models/'
+import { Get, Add } from '../models'
 import { token, DEFAULT, AuditTrailField,  } from '../shared';
-import { TABLE, QUERY } from '../shared/index.js'; 
-import { AccessRightSchema, AuditTrailSchema } from '../schemas/index.js';
+import { TABLE, QUERY } from '../shared'; 
+import { AuditTrailSchema } from '../schemas';
+import jwt from 'jsonwebtoken';
 
 /**
  * Get an existing user
@@ -28,6 +28,23 @@ export const getUserByUsername = async (Username: string = ''): Promise<any> => 
         return [];
     }
 }; // END HERE
+
+/**
+ * Check if the record is default
+ * @param {number} Id - Record Id
+ * @param {String} Table - Database table
+ * @returns {Promise<String>} - returns true or flase
+*/
+ export const isDefaultRecord = async (Id: number = 0, Table: string = ''): Promise<boolean> => {
+    let flag = false;
+    try {
+        if (!Id || !Table) return flag; 
+        if (DEFAULT[Table] && DEFAULT[Table].includes(Id)) flag = true;
+    } catch(error) {
+        console.log('Error Functions isDefaultRecord');
+    }
+    return flag;
+};  // END HERE
 
 /**
  * Logs the actions of a user
@@ -52,9 +69,6 @@ export const logUserAction = async (UserId: number = 0, Action: string = '', Rec
         return false;
     }
 }; // END HERE
-
-
-
 
 /**
  * Decrypts an encrypted password
@@ -95,6 +109,35 @@ export const decryptPassword = async (encryptedPassword = ''): Promise<string> =
         return 'null';
     }
 };  // END HERE
+/**
+     * Creates a new token
+     * @param {number} User - User Id
+     * @returns {Promise<String>} - returns a string of encrypted token
+     */
+export const generateToken = async (user = 0): Promise<string> => {
+    try {
+        if (!user) return 'null';
+        return jwt.sign({ user }, token.SECRET, { expiresIn: "30m" });
+    } catch(error) {
+        console.log(' Error Functions generateToken');
+        return 'null';
+    }
+}
+
+ /**
+ * Creates a new token
+ * @param {number} User - User Id
+ * @returns {Promise<String>} - returns a string of encrypted token
+ */
+export const generateRefreshToken = async (user = 0): Promise<string> => {
+    try {
+        if (!user) return 'null';
+        return jwt.sign({ user }, token.REFRESH, { expiresIn: "8h" });
+    } catch(error) {
+        console.log('Error Functions generateRefreshToken');
+        return 'null';
+    }
+}
 
 /**
  * Compares two password if it matches
@@ -144,7 +187,7 @@ export const generateCode = async (Table: string = ''): Promise<string> => {
  * @param {Array<any>} Data - The array of data values corresponding to the fields
  * @returns {Promise<boolean>} - Returns true if the record exists, otherwise false
  */
-export const isFound = async (Table: string = '', Field: Array<string> = [], Type: Array<string> = [], Data: Array<any> = []): Promise<boolean> => {
+export const isFound = async (Table: string = '', Field: Array<string> = [], Type: Array<any> = [], Data: Array<any> = []): Promise<boolean> => {
     let flag = false;
     try {
         if (!Table || !Field || !Type || !Data || Field.length !== Type.length || Field.length !== Data.length) return flag;
@@ -195,3 +238,22 @@ export const isPermission = async (UserId: number = 0, Action: string = ''): Pro
         return false;
     }
 };  // END HERE
+
+
+/**
+ * Creates a new token
+ * @param {number} Id - User Id
+ * @returns {Promise<String>} - returns a string of encrypted token
+*/
+ export const getUserPermissions = async (Id = 0): Promise<Array<any>> => {
+    try {
+        if (!Id) return [];
+        const userExists = await Get.recordById(Id, TABLE.t010);
+        if (!userExists) return [];
+        const permissions = await Get.recordByFields(QUERY.q010x001, ['RoleId'], [Int], [Id]);
+        return permissions;
+    } catch (error) {
+        console.error('Error in getUserPermissions:', error);
+        return [];
+    }
+}; // END HERE

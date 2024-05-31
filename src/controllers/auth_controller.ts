@@ -5,23 +5,24 @@
  * LOG-DATE     : 2024-05-27 11:48PM
 */
 
-import { GET, ADD, DELETE, UPDATE} from '../models/index.js'
-import { login_schema } from '../schemas/index.js';
-import { err_msg, success_msg } from '../shared/index.js'
-import { getUserByUsername, comparePassword, generateToken, generateRefreshToken, getUserPermissions } from '../functions/index.js';
 
-export const login = async (req, res) => {
+import { LoginSchema } from '../schemas';
+import { ERROR, SUCCESS, CustomRequest } from '../shared'
+import { getUserByUsername, comparePassword, generateToken, generateRefreshToken, getUserPermissions } from '../functions';
+import { Response } from 'express';
+
+export const login = async (req:CustomRequest, res:Response) => {
     try {
     const { Username, Password } = req.body;
-    const { error }  = login_schema.validate({ Username, Password });
-    if ( error ) return res.status(400).json({ Login: false, message: err_msg.e00x19 });
+    const { error }  = LoginSchema.validate({ Username, Password });
+    if ( error ) return res.status(400).json({ Login: false, message: ERROR.e00x19 });
 
     const user = (await getUserByUsername(Username))[0];
-    if (!user) return res.status(400).json({ Login: false, message: err_msg.e00x05 });
-    if (user.isDeactivated === 1)  return res.status(401).json({ Login: false, message: err_msg.e00x20 });
+    if (!user) return res.status(400).json({ Login: false, message: ERROR.e00x05 });
+    if (user.isDeactivated === 1)  return res.status(401).json({ Login: false, message: ERROR.e00x20 });
     
     const isPasswordValid = await comparePassword(Password, user.Password);
-    if (!isPasswordValid) return res.status(400).json({ Login: false, message: err_msg.e00x19 });
+    if (!isPasswordValid) return res.status(400).json({ Login: false, message: ERROR.e00x19 });
 
     const accessToken = await generateToken(user.Id);
     const refreshToken = await generateRefreshToken(user.Id);
@@ -39,13 +40,13 @@ export const login = async (req, res) => {
             accessToken: accessToken,
             refreshToken: refreshToken,
         });
-    } catch (error) {
+    } catch (error:any) {
         console.error('Error in login function:', error.message);
-        return res.status(400).json({ Login: false, message: err_msg.e00x02 });
+        return res.status(400).json({ Login: false, message: ERROR.e00x02 });
     }
 };
 
-export const test_token = async (req, res) => {
+export const test_token = async (req:CustomRequest, res:Response) => {
     try {
         //const accessToken = req.headers['authorization'];
         //const refreshToken = req.headers['refresh-token'];
@@ -58,19 +59,19 @@ export const test_token = async (req, res) => {
     }
 };
 
-export const logout = async (req, res) => {
+export const logout = async (req:CustomRequest, res:Response) => {
     try {
         res.clearCookie("accessToken");
         res.clearCookie("refreshToken");
         res.clearCookie("permissions");
-        return res.status(200).json({ success: true, message: success_msg.s00x00 });
-    } catch (error) {
+        return res.status(200).json({ success: true, message: SUCCESS.s00x00 });
+    } catch (error:any) {
         console.error('Error in login function:', error.message);
-        return res.status(400).json({ Login: false, message: err_msg.e00x02 });
+        return res.status(400).json({ Login: false, message: ERROR.e00x02 });
     }
 };
 
-export const refresh_token = async (req, res) => {
+export const refresh_token = async (req:CustomRequest, res:Response) => {
     try {
         const user = req.user;
         const accessToken = await generateToken(user);
@@ -80,7 +81,7 @@ export const refresh_token = async (req, res) => {
             .header('Refresh-Token', refreshToken)
             .json({
             Login: true,
-            message: success_msg.s00x00,
+            message: SUCCESS.s00x00,
             user:user,
             accessToken:accessToken,
             refreshToken:refreshToken,
