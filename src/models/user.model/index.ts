@@ -43,16 +43,30 @@ export class User {
         
         if (!(this.Middlename)) this.Middlename = 'null';
         if (!(this.Image)) this.Image = 'null';
-        if (!this.Id || this.Id === undefined || this.Id === null) this.Id = 0
+        if (!this.Id || this.Id === undefined || this.Id === null) this.Id = 0;
 
     }
 
-    async validate ():Promise<any>{
+    async validateData ():Promise<any>{
         let flag = false;
         const { error } = UserSchema.validate(this.UserData);
-        if (error) return { result: flag, error: error };
-        if (!this.UserId) return { result: flag, error: 'UserId error' };
-        if (!await isFound(TABLE.t014, ['Id'], [Int], [this.UserId])) return { result: flag, error: 'User not found' };
+        if (error) return { result: flag };
+        if (!this.UserId || this.UserId === undefined || this.UserId === null) return { result: flag };
+        if (!await isFound(TABLE.t014, ['Id'], [Int], [this.UserId])) return { result: flag };
+        flag = true;
+        return { result: flag };
+    }
+    async validateUser ():Promise<any>{
+        let flag = false;
+        if (!this.Id || this.Id === undefined || this.Id === null) return { result: flag };
+        if (!await isFound(TABLE.t014, ['Id'], [Int], [this.Id])) return { result: flag };
+        flag = true;
+        return { result: flag };
+    }
+    async validateCurrentUser ():Promise<any>{
+        let flag = false;
+        if (!this.UserId || this.UserId === undefined || this.UserId === null) return { result: flag };
+        if (!await isFound(TABLE.t014, ['Id'], [Int], [this.UserId])) return { result: flag };
         flag = true;
         return { result: flag };
     }
@@ -96,13 +110,6 @@ export class User {
                 this.RoleId,    0,                  this.IsDeleted,     0,               this.UserId,     
                 new Date().toISOString(), null, null
             ];  
-
-            console.log('Field')
-            console.log(Field)
-            console.log('Type')
-            console.log(Type)
-            console.log('Value')
-            console.log(Value)
             if (await isFound(TABLE.t014, ['Username'], [NVarChar(50)], [this.Username])) return { message: ERROR.e00x06, result: false };
             if (!await Add.record(TABLE.t014, Field, Type, Value)) return { message: ERROR.e00x03, result: false };
             return { message: SUCCESS.s00x02, result: true };
@@ -110,14 +117,6 @@ export class User {
         } catch (error:any) {
             return { message: error.message, result: false };
         }
-    }
-
-    async remove(): Promise<any> {
-        if (!this.Id) return { message: ERROR.e00x07, removed: false };
-        if (!(await isFound(TABLE.t014, ['Id'], [Int], [this.Id]))) return { message: ERROR.e00x05, removed: false };
-        if (await isDefaultRecord(this.Id, TABLE.t014) || await isFound(TABLE.t003, ['UserId'], [Int], [this.Id])) return { message: ERROR.e00x04, removed: false };
-        if (!await Delete.recordById(this.Id, TABLE.t014)) return { message: ERROR.e00x03, removed: false };
-        return { message: SUCCESS.s00x03, result: true };
     }
 
     async trash(): Promise<any> {
@@ -135,5 +134,12 @@ export class User {
         return { message: SUCCESS.s00x04, result: true };
     }
 
+    async remove(): Promise<any> {
+        if (!this.Id) return { message: ERROR.e00x07, removed: false };
+        if (!(await isFound(TABLE.t014, ['Id'], [Int], [this.Id]))) return { message: ERROR.e00x05, removed: false };
+        if (await isDefaultRecord(this.Id, TABLE.t014) || await isFound(TABLE.t003, ['UserId'], [Int], [this.Id])) return { message: ERROR.e00x04, removed: false };
+        if (!await Delete.recordById(this.Id, TABLE.t014)) return { message: ERROR.e00x03, removed: false };
+        return { message: SUCCESS.s00x03, result: true };
+    }
 }; // END CLASS
 

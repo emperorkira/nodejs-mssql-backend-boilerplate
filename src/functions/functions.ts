@@ -20,11 +20,12 @@ import jwt from 'jsonwebtoken';
 */
 export const getUserByUsername = async (Username: string = ''): Promise<any> => {
     try{
-        if (!Username) return [];
+        if (!Username || Username === undefined) return [];
         const user = await Get.recordByFields(QUERY.q014x002, ['Username'], [NVarChar(255)], [Username]);
-        return user;
+        if (!user) return [];
+        return user[0];
     }catch(error){
-        console.log('Error Functions getUserByUsername');
+        console.log('Error Functions getUserByUsername' + error);
         return [];
     }
 }; // END HERE
@@ -46,29 +47,6 @@ export const getUserByUsername = async (Username: string = ''): Promise<any> => 
     return flag;
 };  // END HERE
 
-/**
- * Logs the actions of a user
- * @param {number} UserId - Existing UserId
- * @param {String} Action - Action executed of the user
- * @param {String} Record - Record the user used
- * @param {String} Table - Database table
- * @returns {Promise<String>} - returns true or flase
- * audit trail is where the transaction of each table refers to
- * audit trail cannot be deleted
-*/
-export const logUserAction = async (UserId: number = 0, Action: string = '', Record: number = 0, Table: string = ''): Promise<boolean> => {
-    try {
-        if (!UserId || !Action || !Record || !Table ) return false;
-        const DateCreated = new Date().toISOString();
-        const { error } = AuditTrailSchema.validate({UserId, Action, Record, Table, DateCreated});
-        if (error) return false;
-        const log = await Add.record(TABLE.t003, AuditTrailField, [Int, NVarChar(50), Int, NVarChar(50), DateTime], [UserId, Action, Record, Table, DateCreated]);
-        return log;
-    } catch(error) {
-        console.log('Error Functions logUserAction');
-        return false;
-    }
-}; // END HERE
 
 /**
  * Decrypts an encrypted password
@@ -255,5 +233,30 @@ export const isPermission = async (UserId: number = 0, Action: string = ''): Pro
     } catch (error) {
         console.error('Error in getUserPermissions:', error);
         return [];
+    }
+}; // END HERE
+
+/**
+ * Logs the actions of a user
+ * @param {number} UserId - Existing UserId
+ * @param {String} Action - Action executed of the user
+ * @param {String} Record - Record the user used
+ * @param {String} Table - Database table
+ * @returns {Promise<String>} - returns true or flase
+ * audit trail is where the transaction of each table refers to
+ * audit trail cannot be deleted
+*/
+export const logUserAction = async (UserId: number = 0, Action: string = '', Record: number = 0, Table: string = ''): Promise<boolean> => {
+    try {
+        if (!UserId || !Action || !Record || !Table ) return false;
+        const DateCreated = new Date().toISOString();
+        const { error } = AuditTrailSchema.validate({UserId, Action, Record, Table, DateCreated});
+        if (error) return false;
+        if (! await isFound(TABLE.t014, ['Id'], [Int], [UserId]) )
+        const log = await Add.record(TABLE.t003, AuditTrailField, [Int, NVarChar(50), Int, NVarChar(50), DateTime], [UserId, Action, Record, Table, DateCreated]);
+        return log;
+    } catch(error) {
+        console.log('Error Functions logUserAction');
+        return false;
     }
 }; // END HERE

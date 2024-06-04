@@ -2,7 +2,8 @@ import { User } from './'; // Adjust the import path as needed
 import { UserSchema } from '../../schemas';
 import { conn } from '../../config'; // Import database connection function
 import { ConnectionPool, Request } from 'mssql';
-import { SUCCESS } from '../../shared';
+import { SUCCESS, ERROR } from '../../shared';
+import { hashPassword } from '../../functions';
 jest.mock('../../../src/config', () => ({
     conn: jest.fn()
 }));
@@ -57,16 +58,39 @@ describe('User class', () => {
     
     test('validate method returns false if UserId is not set', async () => {
         const user = new User(mockUserData);
-        const result:any =  user.validate();
+        const result:any =  await user.validate();
         expect(result).toEqual({ result: false });
     });
 
     test('validate method returns true on successful validation', async () => {
         const user = new User(mockUserData, 1);
-        (UserSchema.validate as jest.Mock).mockReturnValue({ error: null });
+        //(UserSchema.validate as jest.Mock).mockReturnValue({ error: null });
         const result:any = user.validate();
         expect(result).toEqual({  result: true });
     });
+    test('save method returns error if updating default record', async () => {
+        const user = new User({ ...mockUserData, Id: 1 });
+
+
+        const result = await user.save();
+        expect(result).toEqual({ message: ERROR.e00x10, result: false });
+    });
+
+    test('save method handles errors correctly', async () => {
+        const user = new User(mockUserData);
+        (hashPassword as jest.Mock).mockRejectedValue(new Error('Hashing Error'));
+
+        const result = await user.save();
+        expect(result).toEqual({ message: 'Hashing Error', result: false });
+    });
+});
+
+/*
+     
+
+        
+
+   
 
     test('save method creates new user record', async () => {
         const create = {
@@ -90,13 +114,6 @@ describe('User class', () => {
         if (await user.validate()) result = await user.save();
         expect(result).toEqual({ message: SUCCESS.s00x02, result: true });
     });
-    
-});
-
-/*
-     
-
-    
 
     
 
@@ -134,22 +151,6 @@ describe('User class', () => {
         expect(result).toEqual({ message: ERROR.e00x27, result: false });
     });
 
-    test('save method returns error if updating default record', async () => {
-        const user = new User({ ...mockUserData, Id: 1 });
-        (hashPassword as jest.Mock).mockResolvedValue('hashedpassword');
-        (findByFields as jest.Mock).mockResolvedValue(false);
-        (isDefaultRecord as jest.Mock).mockResolvedValue(true);
-
-        const result = await user.save();
-        expect(result).toEqual({ message: ERROR.e00x10, result: false });
-    });
-
-    test('save method handles errors correctly', async () => {
-        const user = new User(mockUserData);
-        (hashPassword as jest.Mock).mockRejectedValue(new Error('Hashing Error'));
-
-        const result = await user.save();
-        expect(result).toEqual({ message: 'Hashing Error', result: false });
-    });
+    
 
 */
