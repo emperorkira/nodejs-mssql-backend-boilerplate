@@ -3,7 +3,7 @@
 import { Add, Update, Delete }   from '../'
 import { ERROR, TABLE, SUCCESS, QUERY } from '../../shared';
 import { Int, NVarChar, DateTime } from 'mssql'
-import { findByFields, generateCode, isFound, isDefaultRecord, hashPassword} from '../../functions/functions';
+import { findByFields, generateCode, isFound, isDefaultRecord, hashPassword} from '../../functions';
 import { UserSchema } from '../../schemas';
 
 export class User {

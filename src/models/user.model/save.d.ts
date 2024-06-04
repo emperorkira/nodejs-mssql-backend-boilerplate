@@ -1,4 +1,4 @@
-import { User } from './'; // Adjust the import path as needed
+import { User } from '.'; // Adjust the import path as needed
 import { UserSchema } from '../../schemas';
 import { conn } from '../../config'; // Import database connection function
 import { ConnectionPool, Request } from 'mssql';
